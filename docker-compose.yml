@@ -1,0 +1,56 @@
+services:
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/backend
+      - /backend/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - PG_URL=postgres://root:root@db-user:5432/mydb
+    depends_on:
+      - db-user
+      - db-mongo
+
+  db-user:
+    image: postgres:17.2-alpine
+    container_name: db-user
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/data/:/docker-entrypoint-initdb.d
+  
+  db-mongo:
+    image: mongo
+    container_name: db-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./backend/data/mongo/:/docker-entrypoint-initdb.d
+    environment:      
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root 
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+
