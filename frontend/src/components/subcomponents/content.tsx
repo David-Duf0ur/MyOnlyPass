@@ -48,7 +48,9 @@ export default function Content({ data, setData, setRefresh, refresh, user }: Co
 
   useEffect(() => {
     setFields([]);
-    fetchFieldsConfig(data?._id || '', user?.id_user || 0);
+    if (data && data._id && data.userId) {
+      fetchFieldsConfig(data._id, data.userId);
+    }
   }, [data, refresh]);
 
   return (
@@ -60,7 +62,7 @@ export default function Content({ data, setData, setRefresh, refresh, user }: Co
               deleteCredential(data._id, data.userId || 0);
               setRefresh((prevRefresh) => !prevRefresh);
               setData(undefined);
-            }} className="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" /></svg>
+            }} className="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" /></svg>
             <p className='bg-green-500 pt-1 pb-1 pr-2 pl-2 rounded-xl'>{data?.category}</p>
             {data.favorite ? (
               <>
