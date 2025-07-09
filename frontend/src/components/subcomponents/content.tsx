@@ -36,9 +36,9 @@ export default function Content({ data, setData, setRefresh, refresh, user }: Co
     setRefresh((prevRefresh) => !prevRefresh);
   }
 
-  const fetchFieldsConfig = async (idCredential: string) => {
+  const fetchFieldsConfig = async (idCredential: string, idUser: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/credentials/fields/toto/${idCredential}`);
+      const response = await fetch(`http://localhost:3000/fields/${idUser}/${idCredential}`);
       const fieldsData = await response.json();
       setFields(fieldsData[0].fieldConfig);
     } catch (error) {
@@ -48,7 +48,7 @@ export default function Content({ data, setData, setRefresh, refresh, user }: Co
 
   useEffect(() => {
     setFields([]);
-    fetchFieldsConfig(data?._id || '');
+    fetchFieldsConfig(data?._id || '', user?.id_user || 0);
   }, [data, refresh]);
 
   return (
@@ -90,7 +90,7 @@ export default function Content({ data, setData, setRefresh, refresh, user }: Co
         </div>
       )}
       {showModal && (
-        <AddField data={data} fields={fields} setFields={setFields} setShowModal={setShowModal} setRefresh={setRefresh} />
+        <AddField user={user} data={data} fields={fields} setFields={setFields} setShowModal={setShowModal} setRefresh={setRefresh} />
       )}
     </>
   )

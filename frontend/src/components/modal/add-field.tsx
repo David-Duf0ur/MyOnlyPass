@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { ICredential } from "../../types/interfaces";
+import type { ICredential, IUser } from "../../types/interfaces";
 
 
 interface AddFieldProps {
@@ -8,15 +8,16 @@ interface AddFieldProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   data: ICredential | undefined;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  user: IUser | null;
 }
 
-export default function AddField({ setShowModal, data, setRefresh }: AddFieldProps) {
+export default function AddField({ setShowModal, data, setRefresh, user }: AddFieldProps) {
   const [fieldName, setFieldName] = useState<string>('');
   const [fieldValue, setFieldValue] = useState<string>('');
 
-  const handleClick = async (e: React.FormEvent, idCredential: string) => {
+  const handleClick = async (e: React.FormEvent, idCredential: string, idUser: number) => {
     e.preventDefault();
-    await fetch(`http://localhost:3000/credential/fields/${idCredential}`, {
+    await fetch(`http://localhost:3000/credential/fields/${idCredential}/${idUser}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +52,7 @@ export default function AddField({ setShowModal, data, setRefresh }: AddFieldPro
                 </div>
                 <div className='flex flex-col mb-4'>
                   <button onClick={(e) => {
-                    handleClick(e, data?._id || '');
+                    handleClick(e, data?._id || '', user?.id_user || 0);
                   }} className='bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg'>Add</button>
                 </div>
               </form>

@@ -4,21 +4,21 @@ import { ICredentialFields, IField } from "../types/interfaces.js";
 
 const fieldRouter = Router();
 
-
-fieldRouter.get("/credentials/fields", async (_req, res) => {
-    const db = client_mongo.db("fields");
-    const result = await db.collection("fields").find().toArray();
-    res.json(result);
-})
-
-fieldRouter.get("/credentials/fields/toto/:idCredential", async (req, res) => {
-    const db = client_mongo.db("fields");
-    const result = await db.collection("fields").find({ credentialId: req.params.idCredential }).toArray();
-    res.json(result);
-})
-
-fieldRouter.post("/credential/fields/:idCredential", async (req, res) => {
+// Récupération de tous les fields d'un credential pour un utilisateur
+fieldRouter.get("/fields/:idUser/:idCredential", async (req, res) => {
+    console.log("/fields/:idUser/:idCredential");
     const credentialId = req.params.idCredential;
+    const userId = parseInt(req.params.idUser, 10);
+    const db = client_mongo.db("fields");
+    const result = await db.collection("fields").find({ credentialId, userId }).toArray();
+    res.json(result);
+})
+
+// Création d'un nouveau field pour un credential d'un utilisateur
+fieldRouter.post("/credential/fields/:idCredential/:idUser", async (req, res) => {
+    console.log("/credential/fields/:idCredential/:idUser");
+    const credentialId = req.params.idCredential;
+    const userId = parseInt(req.params.idUser, 10);
     const newField: IField = {
         name: req.body.name,
         value: req.body.value,
@@ -28,11 +28,11 @@ fieldRouter.post("/credential/fields/:idCredential", async (req, res) => {
     const db = client_mongo.db("fields");
     const fieldsCollection = db.collection<ICredentialFields>("fields");
 
-    const existingFields = await db.collection<ICredentialFields>("fields").findOne({ credentialId });
+    const existingFields = await db.collection<ICredentialFields>("fields").findOne({ credentialId, userId });
 
     if (existingFields && existingFields.fieldConfig.length > 0) {
         const result = await fieldsCollection.updateOne(
-            { credentialId },
+            { credentialId, userId },
             { $push: { fieldConfig: newField } }
         );
         res.json(result);
@@ -40,16 +40,19 @@ fieldRouter.post("/credential/fields/:idCredential", async (req, res) => {
 
     if (existingFields && existingFields.fieldConfig.length === 0) {
         const result = await fieldsCollection.updateOne(
-            { credentialId },
+            { credentialId, userId },
             { $set: { fieldConfig: [newField] } }
         );
         res.json(result);
     }
 });
 
-fieldRouter.post("/credential/fields/:idCredential/:fieldName", async (req, res) => {
+// Modification d'un field d'un credential pour un utilisateur
+fieldRouter.post("/credential/fields/:idCredential/:fieldName/:idUser", async (req, res) => {
+    console.log("/credential/fields/:idCredential/:fieldName/:idUser");
     const credentialId = req.params.idCredential;
     const fieldName = req.params.fieldName;
+    const userId = parseInt(req.params.idUser, 10);
 
     const updatedField = {
         name: req.body.name,
@@ -61,7 +64,7 @@ fieldRouter.post("/credential/fields/:idCredential/:fieldName", async (req, res)
     const dbFields = db.collection<ICredentialFields>("fields");
 
     const result = await dbFields.updateOne(
-        { credentialId, "fieldConfig.name": fieldName },
+        { credentialId, "fieldConfig.name": fieldName, userId },
         {
             $set: {
                 "fieldConfig.$.name": updatedField.name,
@@ -74,12 +77,14 @@ fieldRouter.post("/credential/fields/:idCredential/:fieldName", async (req, res)
     res.json({ message: "Field updated successfully", result });
 });
 
-fieldRouter.delete("/field/:idCredential/:fieldName", async (req, res) => {
+// Suppression d'un field d'un credential pour un utilisateur
+fieldRouter.delete("/field/:idCredential/:fieldName/:idUser", async (req, res) => {
     const credentialId = req.params.idCredential;
     const fieldName = req.params.fieldName.trim();
+    const userId = parseInt(req.params.idUser, 10);
     const dbFields = client_mongo.db("fields");
     const result = await dbFields.collection("fields").updateOne(
-        { credentialId },
+        { credentialId, userId },
         { $pull: { fieldConfig: { name: fieldName } } } as any
     );
     res.json(result);

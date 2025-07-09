@@ -1,6 +1,6 @@
 import Content from "./content";
 import Header from "./header";
-import type { ICredential, IFields, IUser } from '../../types/interfaces'
+import type { ICredential, IUser } from '../../types/interfaces'
 import ContentNav from "./content-nav";
 import bg1 from '../../assets/bg-1.jpg';
 import bg2 from '../../assets/bg-2.jpg';
@@ -19,20 +19,17 @@ interface RightSectionProps {
   setSortBy: React.Dispatch<React.SetStateAction<'nom' | 'category' | 'mail'>>;
   pagTotalItems: number;
   pagTotalPages: number;
-  fieldsFull: IFields[];
   setLog: (value: boolean) => void;
-  setUser: (user: IUser | null) => void;
   user: IUser | null;
-
 }
 
-export default function RightSection({ setUser, user, setLog, fieldsFull, dataList, setDataList, setData, data, dataListFull, setRefresh, refresh, sortBy, setSortBy, pagTotalItems, pagTotalPages }: RightSectionProps) {
+export default function RightSection({ user, setLog, dataList, setDataList, setData, data, dataListFull, setRefresh, refresh, sortBy, setSortBy, pagTotalItems, pagTotalPages }: RightSectionProps) {
 
 
   return (
     <DataContext.Provider value={{ theme: "light" }}>
       <div style={{ backgroundImage: `url(${bg1})` }} className='basis-3/4 flex flex-col bg-cover bg-center bg-no-repeat flex-1 h-full'>
-        <Header setLog={setLog} dataListFull={dataListFull} setData={setData} fieldsFull={fieldsFull} setUser={setUser} user={user} />
+        <Header setLog={setLog} dataListFull={dataListFull} setData={setData} user={user} />
         <div className='flex flex-col'>
           <FormSearch dataListFull={dataListFull} setData={setData} />
           <div style={{ backgroundImage: `url(${bg2})` }}

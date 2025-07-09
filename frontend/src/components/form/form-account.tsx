@@ -41,15 +41,15 @@ export default function FormAccount({ setRefresh, data, fields, user }: FormAcco
             })
         });
 
-        for (const key in customFieldValues) {
-            await fetch(`http://localhost:3000/credential/fields/${data?._id}/${key}`, {
+        for (const fieldName in customFieldValues) {
+            await fetch(`http://localhost:3000/credential/fields/${data?._id}/${fieldName}/${user?.id_user}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    name: key,
-                    value: customFieldValues[key],
+                    name: fieldName,
+                    value: customFieldValues[fieldName],
                     required: false
                 })
             });
@@ -68,8 +68,8 @@ export default function FormAccount({ setRefresh, data, fields, user }: FormAcco
         }
     }
 
-    const deleteField = async (idCredential: string, fieldName: string) => {
-        await fetch(`http://localhost:3000/field/${idCredential}/${fieldName}`, {
+    const deleteField = async (idCredential: string, fieldName: string, idUser: number) => {
+        await fetch(`http://localhost:3000/field/${idCredential}/${fieldName}/${idUser}`, {
             method: 'DELETE',
         });
         setRefresh((prevRefresh) => !prevRefresh);
@@ -142,7 +142,7 @@ export default function FormAccount({ setRefresh, data, fields, user }: FormAcco
                                 <div key={index} className='flex flex-col mb-4'>
                                     <div className='flex items-center gap-2 cursor-pointer w-64'>
                                         <label htmlFor={field.name} className="">{field.name}</label>
-                                        <svg onClick={() => deleteField(data?._id || '', field.name)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
+                                        <svg onClick={() => deleteField(data?._id || '', field.name, user?.id_user || 0)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
                                     </div>
                                     <input onChange={e => handleCustomFieldChange(field.name, e.target.value)} id={field.name} value={customFieldValues[field.name] || ''} className="bg-amber-200 p-2 rounded-lg w-64" type="text" name={field.name} title={field.name} placeholder={field.name}></input>
                                 </div>

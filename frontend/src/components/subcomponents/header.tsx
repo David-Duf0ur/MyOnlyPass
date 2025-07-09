@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import AdminPanel from '../modal/admin-panel';
 import avatar from '../../assets/ddu_avatar.png';
-import type { ICredential, IFields, IUser } from '../../types/interfaces';
+import type { ICredential, IUser } from '../../types/interfaces';
 
 interface HeaderProps {
   dataListFull: ICredential[];
   setData: (data: ICredential | undefined) => void;
-  fieldsFull: IFields[];
   setLog: (log: boolean) => void;
-  setUser: (user: IUser | null) => void;
   user: IUser | null;
 }
 
-export default function Header({ setLog, dataListFull, setData, fieldsFull, setUser, user }: HeaderProps) {
+export default function Header({ setLog, dataListFull, setData, user }: HeaderProps) {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -30,7 +28,7 @@ export default function Header({ setLog, dataListFull, setData, fieldsFull, setU
         </div>
       </div>
       {showModal && (
-        <AdminPanel setShowModal={setShowModal} dataListFull={dataListFull} fieldsFull={fieldsFull} setUser={setUser} user={user} />
+        <AdminPanel setShowModal={setShowModal} dataListFull={dataListFull} user={user} />
       )}
     </>
 

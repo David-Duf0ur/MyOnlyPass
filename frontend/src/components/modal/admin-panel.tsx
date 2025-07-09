@@ -4,12 +4,10 @@ import type { ICredential, IFields, IUser } from "../../types/interfaces";
 interface AdminPanelProps {
   setShowModal: (show: boolean) => void;
   dataListFull: ICredential[];
-  fieldsFull: IFields[];
-  setUser: (user: IUser | null) => void;
   user: IUser | null;
 }
 
-export default function AdminPanel({ setShowModal, dataListFull, fieldsFull, setUser, user }: AdminPanelProps) {
+export default function AdminPanel({ setShowModal, dataListFull, user }: AdminPanelProps) {
   const [csvData, setCsvData] = useState<string>("");
 
   function convertToCSV(data: ICredential[] | IFields[]): string {

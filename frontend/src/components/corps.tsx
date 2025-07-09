@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import LeftSection from '../components/subcomponents/left-section'
 import RightSection from '../components/subcomponents/right-section'
-import type { ICredential, IFields, IUser } from '../types/interfaces'
+import type { ICredential, IUser } from '../types/interfaces'
 
 export interface ICredentialFields {
     setLog: (log: boolean) => void;
-    setUser: (user: IUser | null) => void;
     user: IUser | null;
 }
 
-export default function Corps({ setLog, setUser, user }: ICredentialFields) {
+export default function Corps({ setLog, user }: ICredentialFields) {
     const [dataList, setDataList] = useState<ICredential[]>([])
     const [dataListFull, setDataListFull] = useState<ICredential[]>([])
     const [data, setData] = useState<ICredential | undefined>(undefined)
@@ -17,7 +16,7 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
     const [refresh, setRefresh] = useState(false)
     const [pagTotalItems, setPagTotalItems] = useState(4)
     const [pagTotalPages, setPagTotalPages] = useState(1)
-    const [fieldsFull, setFieldsFull] = useState<IFields[]>([]);
+
     const [itemFilter, setItemFilter] = useState<string>('all')
     const [dataListFavorites, setDataListFavorites] = useState<ICredential[]>([]);
 
@@ -67,20 +66,9 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
         }
     }
 
-    const fetchDataFields = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/credentials/fields`)
-            const dataFetch = await response.json()
-            setFieldsFull(dataFetch)
-        } catch (error) {
-            console.error("Erreur lors de la récupération :", error)
-        }
-    }
-
     useEffect(() => {
         fetchDataPag(1, user?.id_user || 0)
         fetchDataCredentials(user?.id_user || 0)
-        fetchDataFields()
         fetchDataFavorites(user?.id_user || 0)
     }, [refresh])
 
@@ -88,7 +76,6 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
         <div className='flex'>
             <LeftSection itemFilter={itemFilter} setItemFilter={setItemFilter} />
             <RightSection
-                fieldsFull={fieldsFull}
                 pagTotalItems={pagTotalItems}
                 pagTotalPages={pagTotalPages}
                 dataList={sortData(currentDataList)}
@@ -101,7 +88,7 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
                 sortBy={sortBy}
                 setSortBy={setSortBy}
                 setLog={setLog}
-                setUser={setUser} user={user} />
+                user={user} />
         </div>
     )
 }
