@@ -77,6 +77,7 @@ export default function ContentNav({ user, dataList, setDataList, setData, sortB
       </div>
       {showModal && (
         <CreateAccount
+          user={user}
           setShowModal={setShowModal}
           setRefresh={setRefresh}
           dataList={dataList}

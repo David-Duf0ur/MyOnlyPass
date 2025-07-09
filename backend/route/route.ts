@@ -23,11 +23,14 @@ router.delete("/credential/delete/:idCredential/:userId", async (req, res) => {
   res.json(result);
 });
 
-// Création
-router.post("/credential", async (req, res) => {
+// Création d'un nouveau credential pour un utilisateur
+// ainsi que l'initialisation de ses fields
+router.post("/credential/:userId", async (req, res) => {
+  console.log("/credential/:userId");
+  const userId = parseInt(req.params.userId, 10);
   const dbCredential = client_mongo.db("credentials");
   const result = await dbCredential.collection("credentials").insertOne({
-    userId: 1,
+    userId: userId,
     title: req.body.title,
     mail: req.body.mail,
     category: req.body.category,
@@ -39,8 +42,8 @@ router.post("/credential", async (req, res) => {
 
   const dbFields = client_mongo.db("fields");
   await dbFields.collection("fields").insertOne({
-    userId: 1,
-    credentialId: result.insertedId.toString(),
+    userId: userId,
+    credentialId: result.insertedId.toString(), //Récupération de l'ID du credential créé
     fieldConfig: [],
     created_at: new Date(),
     updated_at: new Date()
