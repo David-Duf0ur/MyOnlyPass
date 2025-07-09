@@ -108,7 +108,7 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
                         <div className='w-[500px]'></div>
                         {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 17.175V6.825q0-.425.3-.713t.7-.287q.125 0 .263.037t.262.113l8.15 5.175q.225.15.338.375t.112.475t-.112.475t-.338.375l-8.15 5.175q-.125.075-.262.113T9 18.175q-.4 0-.7-.288t-.3-.712" /></svg> */}
                     </div>
-                    {test.theme}
+                    <p>Test contexte REACT : {test.theme}</p>
                     <div className='flex flex-col mb-4'>
                         <label htmlFor="email_field" className="">Email</label>
                         <input onChange={e => setEmail(e.target.value)} id="email_field" value={email} className="bg-amber-200 p-2 rounded-lg w-64" type="email" name="input-email" title="Account email" placeholder="example@example.com"></input>

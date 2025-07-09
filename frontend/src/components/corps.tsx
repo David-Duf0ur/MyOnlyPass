@@ -47,9 +47,9 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
         }
     }
 
-    const fetchDataCredentials = async () => {
+    const fetchDataCredentials = async (userId: number) => {
         try {
-            const response = await fetch(`http://localhost:3000/credentials/full`)
+            const response = await fetch(`http://localhost:3000/credentials/full/${userId}`)
             const dataFetch = await response.json()
             setDataListFull(dataFetch)
         } catch (error) {
@@ -79,7 +79,7 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
 
     useEffect(() => {
         fetchDataPag(1)
-        fetchDataCredentials()
+        fetchDataCredentials(user?.id_user || 0)
         fetchDataFields()
         fetchDataFavorites()
     }, [refresh])

@@ -4,9 +4,10 @@ import { ObjectId } from "mongodb";
 
 const credentialRouter = Router();
 
-credentialRouter.get("/credentials/full", async (_req, res) => {
+credentialRouter.get("/credentials/full/:userId", async (req, res) => {
+    const userId = parseInt(req.params.userId, 10);
     const db = client_mongo.db("credentials");
-    const result = await db.collection("credentials").find().toArray();
+    const result = await db.collection("credentials").find({ userId }).toArray();
     res.json(result);
 })
 

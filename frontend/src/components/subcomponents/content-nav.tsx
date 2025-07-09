@@ -61,7 +61,7 @@ export default function ContentNav({ dataList, setDataList, setData, sortBy, set
             </button>
           ))}
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center">
           {<div className='flex flex-wrap gap-2 justify-center m-4'>
             {Array.from({ length: pagTotalPages }).map((_, idx) => (
               <button
@@ -71,6 +71,7 @@ export default function ContentNav({ dataList, setDataList, setData, sortBy, set
               </button>
             ))}
           </div>}
+          {/* <p className='text-2xl'>/ {pagTotalPages}</p> */}
         </div>
       </div>
       {showModal && (

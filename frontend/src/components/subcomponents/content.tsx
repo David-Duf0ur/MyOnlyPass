@@ -54,7 +54,6 @@ export default function Content({ data, setData, setRefresh, refresh }: ContentP
     <>
       {data ? (
         <div className='basis-2/3 flex flex-col justify-between m-4 bg-gray-100 items-center rounded-lg border-2 border-amber-300 shadow-lg'>
-
           <div className="mt-2 pl-4 pr-4 flex justify-between w-full">
             <svg onClick={() => {
               deleteCredential(data._id);
