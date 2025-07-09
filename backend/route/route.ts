@@ -11,17 +11,23 @@ router.use(userRouter);
 router.use(credentialRouter);
 router.use(fieldRouter);
 
-router.delete("/credential/delete/:id", async (req, res) => {
+// Suppression d'un crédential et des ces fields pour un utilisateur
+router.delete("/credential/delete/:idCredential/:userId", async (req, res) => {
+  console.log("/credential/delete/:idCredential/:userId");
+  const userId = parseInt(req.params.userId, 10);
+  const idCredential = req.params.idCredential;
   const dbCredential = client_mongo.db("credentials");
-  const result = await dbCredential.collection("credentials").deleteOne({ _id: new ObjectId(req.params.id) });
+  const result = await dbCredential.collection("credentials").deleteOne({ _id: new ObjectId(idCredential), userId });
   const dbFields = client_mongo.db("fields");
-  await dbFields.collection("fields").deleteOne({ credentialId: req.params.id });
+  await dbFields.collection("fields").deleteOne({ credentialId: idCredential, userId });
   res.json(result);
-})
+});
 
+// Création
 router.post("/credential", async (req, res) => {
   const dbCredential = client_mongo.db("credentials");
   const result = await dbCredential.collection("credentials").insertOne({
+    userId: 1,
     title: req.body.title,
     mail: req.body.mail,
     category: req.body.category,

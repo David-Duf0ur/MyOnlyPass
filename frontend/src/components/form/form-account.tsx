@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import type { ICredential } from "../../types/interfaces";
+import type { ICredential, IUser } from "../../types/interfaces";
 import { DataContext } from "../../context/dataContext";
 
 
@@ -9,9 +9,10 @@ interface FormAccountProps {
     setFields: React.Dispatch<React.SetStateAction<{ name: string; value: string }[]>>;
     data: ICredential | undefined;
     fields: { name: string; value: string }[];
+    user: IUser | null;
 }
 
-export default function FormAccount({ setRefresh, data, fields }: FormAccountProps) {
+export default function FormAccount({ setRefresh, data, fields, user }: FormAccountProps) {
     const test = useContext(DataContext);
     const [email, setEmail] = useState<string>(data?.mail || "empty");
     const [password, setPassword] = useState<string>(data?.passwordEncrypted || "empty");
@@ -23,9 +24,9 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
         () => fields.reduce((acc, field) => ({ ...acc, [field.name]: field.value }), {})
     );
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent, idCredential: string, idUser: number) => {
         e.preventDefault();
-        await fetch(`http://localhost:3000/credential/${data?._id}`, {
+        await fetch(`http://localhost:3000/credential/${idCredential}/${idUser}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
             <form
                 className='flex flex-col items-center mx-auto p-6'
                 onSubmit={(e) => {
-                    handleSubmit(e);
+                    handleSubmit(e, data?._id || '', user?.id_user || 0);
                     setRefresh((prevRefresh) => !prevRefresh);
                 }}>
                 <div className='flex items-center gap-4 w-1/2 mr-6 ml-6 mb-2'>

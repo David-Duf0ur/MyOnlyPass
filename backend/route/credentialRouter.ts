@@ -4,30 +4,46 @@ import { ObjectId } from "mongodb";
 
 const credentialRouter = Router();
 
+// POUR LE DEV
+credentialRouter.get("/credentials/fullax", async (req, res) => {
+    console.log("/credentials/fullax")
+    const db = client_mongo.db("credentials");
+    const result = await db.collection("credentials").find().toArray();
+    res.json(result);
+})
+
+// Récupération de tous les crédentials d'un utilisateur
 credentialRouter.get("/credentials/full/:userId", async (req, res) => {
+    console.log("/credentials/full/:userId")
     const userId = parseInt(req.params.userId, 10);
     const db = client_mongo.db("credentials");
     const result = await db.collection("credentials").find({ userId }).toArray();
     res.json(result);
 })
 
-credentialRouter.get("/credentials/favorites", async (_req, res) => {
+// Récupération de tous les crédentials favoris d'un utilisateur
+credentialRouter.get("/credentials/favorites/:userId", async (req, res) => {
+    console.log("/credentials/favorites/:userId")
+    const userId = parseInt(req.params.userId, 10);
     const db = client_mongo.db("credentials");
-    const result = await db.collection("credentials").find({ favorite: true }).toArray();
+    const result = await db.collection("credentials").find({ favorite: true, userId }).toArray();
     res.json(result);
 })
 
-credentialRouter.get("/credentials/:page/:limit", async (req, res) => {
+// Récupération de tous les crédentials d'un utilisateur avec pagination
+credentialRouter.get("/credentials/:page/:limit/:userId", async (req, res) => {
+    console.log("/credentials/:page/:limit/:userId")
     const page = parseInt(req.params.page, 10) || 1;      // Numéro de page (par défaut 1)
     const limit = parseInt(req.params.limit, 10) || 5;   // Nombre d'éléments par page (par défaut 4)
+    const userId = parseInt(req.params.userId, 10);
     const skip = (page - 1) * limit;
 
     const db = client_mongo.db("credentials");
     const collection = db.collection("credentials");
 
-    const totalItems = await collection.countDocuments(); // Nombre total d'éléments
+    const totalItems = await collection.countDocuments({ userId }); // Nombre total d'éléments
     const results = await collection
-        .find()
+        .find({ userId })
         .skip(skip)
         .limit(limit)
         .toArray();
@@ -40,21 +56,26 @@ credentialRouter.get("/credentials/:page/:limit", async (req, res) => {
     });
 });
 
-credentialRouter.post("/credential/favorite/:id", async (req, res) => {
-    const _id = req.params.id;
+// Modification du statut favori d'un credential pour un utilisateur
+credentialRouter.post("/credential/favorite/:idCredential/:userId", async (req, res) => {
+    console.log("/credential/favorite/:idCredential/:userId")
+    const _id = req.params.idCredential;
     const favorite = req.body.favorite;
+    const userId = parseInt(req.params.userId, 10);
     const db = client_mongo.db("credentials");
     const result = await db.collection("credentials").updateOne(
-        { _id: new ObjectId(_id) } as any,
+        { _id: new ObjectId(_id), userId } as any,
         { $set: { favorite } }
     );
     res.json(result);
 })
 
-credentialRouter.post("/credential/:id", async (req, res) => {
+// Modification d'un crédential pour un utilisateur
+credentialRouter.post("/credential/:idCredential/:userId", async (req, res) => {
+    console.log("/credential/:idCredential/:userId")
     const db = client_mongo.db("credentials");
     const result = await db.collection("credentials").updateOne(
-        { _id: new ObjectId(req.params.id) },
+        { _id: new ObjectId(req.params.idCredential), userId: parseInt(req.params.userId, 10) },
         {
             $set: {
                 title: req.body.title,

@@ -35,9 +35,9 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
         });
     }
 
-    const fetchDataPag = async (page: number) => {
+    const fetchDataPag = async (page: number, userId: number) => {
         try {
-            const response = await fetch(`http://localhost:3000/credentials/${page}/4`)
+            const response = await fetch(`http://localhost:3000/credentials/${page}/4/${userId}`)
             const dataFetch = await response.json()
             setDataList(dataFetch.results)
             setPagTotalItems(dataFetch.totalItems)
@@ -57,9 +57,9 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
         }
     }
 
-    const fetchDataFavorites = async () => {
+    const fetchDataFavorites = async (userId: number) => {
         try {
-            const response = await fetch(`http://localhost:3000/credentials/favorites`)
+            const response = await fetch(`http://localhost:3000/credentials/favorites/${userId}`)
             const dataFetch = await response.json()
             setDataListFavorites(dataFetch)
         } catch (error) {
@@ -78,10 +78,10 @@ export default function Corps({ setLog, setUser, user }: ICredentialFields) {
     }
 
     useEffect(() => {
-        fetchDataPag(1)
+        fetchDataPag(1, user?.id_user || 0)
         fetchDataCredentials(user?.id_user || 0)
         fetchDataFields()
-        fetchDataFavorites()
+        fetchDataFavorites(user?.id_user || 0)
     }, [refresh])
 
     return (

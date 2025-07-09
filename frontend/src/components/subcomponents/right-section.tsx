@@ -37,8 +37,8 @@ export default function RightSection({ setUser, user, setLog, fieldsFull, dataLi
           <FormSearch dataListFull={dataListFull} setData={setData} />
           <div style={{ backgroundImage: `url(${bg2})` }}
             className='bg-cover bg-center bg-no-repeat flex m-4 rounded-lg border-1 border-white'>
-            <ContentNav pagTotalItems={pagTotalItems} pagTotalPages={pagTotalPages} dataList={dataList} setDataList={setDataList} setData={setData} sortBy={sortBy} setSortBy={setSortBy} setRefresh={setRefresh} refresh={refresh} />
-            <Content data={data} setData={setData} setRefresh={setRefresh} refresh={refresh} />
+            <ContentNav user={user} pagTotalItems={pagTotalItems} pagTotalPages={pagTotalPages} dataList={dataList} setDataList={setDataList} setData={setData} sortBy={sortBy} setSortBy={setSortBy} setRefresh={setRefresh} refresh={refresh} />
+            <Content user={user} data={data} setData={setData} setRefresh={setRefresh} refresh={refresh} />
           </div>
         </div>
       </div>

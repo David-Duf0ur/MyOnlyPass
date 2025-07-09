@@ -29,7 +29,6 @@ export default function FormLogin({ setLog, setUser, user }: FormLoginProps) {
             setErrorMessage("Login failed. Please try again.");
             return;
         }
-        console.log(data);
         setUser(data);
         setLog(true);
         setErrorMessage("");
