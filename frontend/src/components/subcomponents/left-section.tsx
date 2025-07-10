@@ -52,6 +52,10 @@ export default function LeftSection({ itemFilter, setItemFilter }: ILeftSectionP
               <svg className='hover:w-[30px] hover:h-[30px]' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M6 22q-.825 0-1.412-.587T4 20V10q0-.825.588-1.412T6 8h1V6q0-2.075 1.463-3.537T12 1t3.538 1.463T17 6v2h1q.825 0 1.413.588T20 10v10q0 .825-.587 1.413T18 22zm6-5q.825 0 1.413-.587T14 15t-.587-1.412T12 13t-1.412.588T10 15t.588 1.413T12 17M9 8h6V6q0-1.25-.875-2.125T12 3t-2.125.875T9 6z" /></svg>
               <p className='text-2xl'>Pass generator</p>
             </li>
+            <li className='flex content-center items-center gap-1 ml-4 mt-2 cursor-pointer hover:underline'>
+              <svg className='hover:w-[30px] hover:h-[30px] bg-gray-500' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="#dce2e2" d="M478.685 36H32a4.5 4.5 0 0 0 0 9h107v101H32a4.5 4.5 0 0 0 0 9h107v102H32a4.5 4.5 0 0 0 0 9h107v101H32a4.5 4.5 0 0 0 0 9h107v110.685a4.5 4.5 0 0 0 9 0V376h103v110.685a4.5 4.5 0 0 0 9 0V376h103v110.685a4.5 4.5 0 0 0 9 0V376h102v110.685a4.5 4.5 0 0 0 9 0V40c0-2.485-1.83-4-4.315-4M363 146H260V45h103zm9-101h102v101H372zm-9 110v102H260V155zm9 0h102v102H372zM148 45h103v101H148zm0 110h103v102H148zm0 212V266h103v101zm112 0V266h103v101zm112 0V266h102v101z" /><path fill="#ff473e" d="M279.047 441.203a12 12 0 0 1-10.679-6.524L166.973 237.004L49.25 379.458c-4.222 5.108-11.786 5.828-16.894 1.605c-5.109-4.222-5.828-11.785-1.606-16.895l129.332-156.501a12 12 0 0 1 19.927 2.167l99.766 194.497L468.347 84.379c3.365-5.708 10.721-7.611 16.431-4.245s7.61 10.721 4.245 16.431L289.384 435.296a12 12 0 0 1-10.337 5.907" /><path fill="#b9c5c6" d="M478.685 489.418H32a7 7 0 0 1-7-7V40a7 7 0 1 1 14 0v435.418h439.685a7 7 0 1 1 0 14" /></svg>
+              <p className='text-2xl'>Stock Exchange </p>
+            </li>
           </ol>
         </ol>
       </div >

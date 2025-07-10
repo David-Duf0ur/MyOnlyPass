@@ -6,6 +6,7 @@ import bg1 from '../../assets/bg-1.jpg';
 import bg2 from '../../assets/bg-2.jpg';
 import FormSearch from "../form/form-search";
 import { DataContext } from "../../context/dataContext";
+import { useState } from "react";
 
 interface RightSectionProps {
   dataList: ICredential[];
@@ -24,12 +25,12 @@ interface RightSectionProps {
 }
 
 export default function RightSection({ user, setLog, dataList, setDataList, setData, data, dataListFull, setRefresh, refresh, sortBy, setSortBy, pagTotalItems, pagTotalPages }: RightSectionProps) {
-
+  const [selectedAvatar, setSelectedAvatar] = useState(1);
 
   return (
     <DataContext.Provider value={{ theme: "light" }}>
       <div style={{ backgroundImage: `url(${bg1})` }} className='basis-3/4 flex flex-col bg-cover bg-center bg-no-repeat flex-1 h-full'>
-        <Header setLog={setLog} dataListFull={dataListFull} setData={setData} user={user} />
+        <Header setLog={setLog} dataListFull={dataListFull} setData={setData} user={user} selectedAvatar={selectedAvatar} setSelectedAvatar={setSelectedAvatar} />
         <div className='flex flex-col'>
           <FormSearch dataListFull={dataListFull} setData={setData} />
           <div style={{ backgroundImage: `url(${bg2})` }}
