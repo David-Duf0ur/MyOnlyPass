@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../../context/UserContext";
 
 interface FormRegisterProps {
     setLog: (value: boolean) => void;
 }
 
 export default function FormRegister({ setLog }: FormRegisterProps) {
+    const { updateUser } = useContext(UserContext);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [firstname, setFirstname] = useState<string>("");
+    const [lastname, setLastname] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -22,15 +26,15 @@ export default function FormRegister({ setLog }: FormRegisterProps) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email, password, firstname: "john", lastname: "doe" }),
+            body: JSON.stringify({ email, password, firstname, lastname }),
         });
         const data = await response.json();
         if (!response.ok) {
-            console.error("Registration failed:", data);
+            setErrorMessage(data.error || "Registration failed");
             setLog(false);
             return;
         }
-        console.log(data);
+        updateUser({ ...data });
         setLog(true);
     };
 
@@ -49,6 +53,16 @@ export default function FormRegister({ setLog }: FormRegisterProps) {
                 <div className="flex flex-col">
                     <label htmlFor="">Confirm password</label>
                     <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="bg-gray-200 p-2 rounded-lg mt-2" />
+                </div>
+                <div className="flex gap-2">
+                    <div className="flex flex-col">
+                        <label htmlFor="">Firstname</label>
+                        <input type="text" value={firstname} onChange={(e) => setFirstname(e.target.value)} className="bg-gray-200 p-2 rounded-lg mt-2" />
+                    </div>
+                    <div className="flex flex-col">
+                        <label htmlFor="">Lastname</label>
+                        <input type="text" value={lastname} onChange={(e) => setLastname(e.target.value)} className="bg-gray-200 p-2 rounded-lg mt-2" />
+                    </div>
                 </div>
                 {errorMessage && <p className="text-red-500">{errorMessage}</p>}
                 <button className="cursor-pointer bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg mt-4">Register</button>

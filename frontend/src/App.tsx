@@ -4,6 +4,7 @@ import Corps from './components/corps'
 import { useState } from 'react'
 import Accueil from './components/accueil'
 import type { IUser } from './types/interfaces'
+import { UserProvider } from './context/UserContext'
 
 
 export default function App() {
@@ -11,14 +12,16 @@ export default function App() {
   const [log, setLog] = useState<boolean>(false)
 
   return (
-    <div className='flex flex-col h-screen'>
-      {log
-        ?
-        <Corps setLog={setLog} setUser={setUser} user={user} />
-        :
-        <Accueil setLog={setLog} setUser={setUser} user={user} />}
-      <Footer />
-    </div>
+    <UserProvider userContext={user}>
+      <div className='flex flex-col h-screen'>
+        {log
+          ?
+          <Corps setLog={setLog} />
+          :
+          <Accueil setLog={setLog} setUser={setUser} user={user} />}
+        <Footer />
+      </div>
+    </UserProvider>
   )
 }
 

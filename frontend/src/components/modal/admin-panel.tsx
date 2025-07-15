@@ -19,8 +19,10 @@ interface AdminPanelProps {
 }
 
 export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: AdminPanelProps) {
-
   const { user, updateUser } = useContext(UserContext);
+
+  const [firstname, setFirstname] = useState<string>(user?.firstname || "");
+  const [lastname, setLastname] = useState<string>(user?.lastname || "");
 
   const [csvData, setCsvData] = useState<string>("");
   const [selectedAvatar, setSelectedAvatar] = useState<number>(user.avatar || 0);
@@ -57,6 +59,21 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: A
     setRefresh((prevRefresh) => !prevRefresh);
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const fetchData = await fetch(`http://localhost:3000/user/${user?.id_user}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ firstname, lastname }),
+    });
+
+    const data = await fetchData.json();
+    updateUser({ ...user, firstname: data.firstname, lastname: data.lastname });
+    setRefresh((prevRefresh) => !prevRefresh);
+  }
+
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center bg-gray-600/60">
@@ -89,8 +106,19 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: A
                 <div className="border-b-2 border-black"></div>
                 <h3 className='text-lg font-semibold'>User Information</h3>
                 <p className='text-m'>Email: {user?.email || "Not logged in"}</p>
-                <p className='text-m'>First Name: {user?.firstname || "N/A"}</p>
-                <p className='text-m'>Last Name: {user?.lastname || "N/A"}</p>
+                <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+                  <div className="flex flex-col gap-2">
+                    <label className='text-m'>First Name</label>
+                    <input className="bg-amber-200 p-2 rounded-lg w-64" type="text" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className='text-m'>Last Name</label>
+                    <input className="bg-amber-200 p-2 rounded-lg w-64" type="text" value={lastname} onChange={(e) => setLastname(e.target.value)} />
+                  </div>
+                  <button className='self-center w-24 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2'>Save</button>
+                </form>
+                <div className="border-b-2 border-black"></div>
+                <h3 className='text-lg font-semibold'>Account management</h3>
                 <div className="flex flex-col items-center justify-between mt-4">
                   <button className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Delete account</button>
                 </div>

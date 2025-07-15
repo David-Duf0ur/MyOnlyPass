@@ -1,12 +1,12 @@
-import { useState } from "react";
-import type { IUser } from "../../types/interfaces";
+import { useContext, useState } from "react";
+import { UserContext } from "../../context/UserContext";
 
 interface FormLoginProps {
     setLog: (value: boolean) => void;
-    setUser: (user: IUser | null) => void;
 }
 
-export default function FormLogin({ setLog, setUser }: FormLoginProps) {
+export default function FormLogin({ setLog }: FormLoginProps) {
+    const { user, updateUser } = useContext(UserContext);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -22,13 +22,15 @@ export default function FormLogin({ setLog, setUser }: FormLoginProps) {
             body: JSON.stringify({ email, password }),
         });
         const data = await response.json();
+        console.log('**********', data)
         if (!response.ok) {
             console.error("Login failed:", data);
             setLog(false);
             setErrorMessage("Login failed. Please try again.");
             return;
         }
-        setUser(data);
+        updateUser({ ...data });
+        console.log('$$$$$$$$', user)
         setLog(true);
         setErrorMessage("");
     };

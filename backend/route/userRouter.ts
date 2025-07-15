@@ -3,11 +3,13 @@ import { client_pg } from "../data/data.js";
 
 const userRouter = Router();
 
+// POUR LE DEV
 userRouter.get("/user", async (_req, res) => {
     const result = await client_pg.query("SELECT * FROM users");
     res.json(result.rows);
 })
 
+// Modification de son avatar pour un utilisateur
 userRouter.post("/user/:idUser/avatar/:avatar", async (req, res) => {
     console.log("/user/:idUser/avatar/:avatar")
     const { idUser, avatar } = req.params;
@@ -24,8 +26,26 @@ userRouter.post("/user/:idUser/avatar/:avatar", async (req, res) => {
     res.json(user);
 })
 
+// Modification des informations d'un utilisateur
+userRouter.patch("/user/:idUser", async (req, res) => {
+    console.log("/user/:idUser")
+    const { idUser } = req.params;
+    const { firstname, lastname } = req.body;
+    const preparedQuery = {
+        text: `UPDATE users 
+            SET firstname = $1, lastname = $2 
+            WHERE id_user = $3 
+            RETURNING *`,
+        values: [firstname, lastname, idUser],
+    };
+    const result = await client_pg.query(preparedQuery);
+    const user = result.rows[0];
+    res.json(user);
+})
 
+// Login route pour la connexion d'un utilisateur
 userRouter.post("/login", async (req, res) => {
+    console.log("/login")
     const { email, password } = req.body;
     const preparedQuery = {
         text: `SELECT * 
@@ -50,13 +70,15 @@ userRouter.post("/login", async (req, res) => {
     res.json(user);
 })
 
+// Register route pour la création d'un nouvel utilisateur
 userRouter.post("/register", async (req, res) => {
+    console.log("/register")
     const { email, password, firstname, lastname } = req.body;
     const preparedQuery = {
-        text: `INSERT INTO users (email, password, firstname, lastname) 
-            VALUES ($1, $2, $3, $4) 
+        text: `INSERT INTO users (email, password, firstname, lastname, avatar) 
+            VALUES ($1, $2, $3, $4, $5) 
             RETURNING *`,
-        values: [email, password, firstname, lastname],
+        values: [email, password, firstname, lastname, 1],
     };
     try {
         const result = await client_pg.query(preparedQuery);
