@@ -4,10 +4,9 @@ import type { IUser } from "../../types/interfaces";
 interface FormLoginProps {
     setLog: (value: boolean) => void;
     setUser: (user: IUser | null) => void;
-    user?: IUser | null;
 }
 
-export default function FormLogin({ setLog, setUser, user }: FormLoginProps) {
+export default function FormLogin({ setLog, setUser }: FormLoginProps) {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");

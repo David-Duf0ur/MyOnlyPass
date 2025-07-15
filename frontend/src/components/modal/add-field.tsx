@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import type { ICredential, IUser } from "../../types/interfaces";
+import type { ICredential } from "../../types/interfaces";
 import { UserContext } from "../../context/UserContext";
 
 
@@ -53,7 +53,7 @@ export default function AddField({ setShowModal, data, setRefresh }: AddFieldPro
                 </div>
                 <div className='flex flex-col mb-4'>
                   <button onClick={(e) => {
-                    handleClick(e, data?._id || '', user?.idUser || 0);
+                    handleClick(e, data?._id || '', user?.id_user || 0);
                   }} className='bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg'>Add</button>
                 </div>
               </form>

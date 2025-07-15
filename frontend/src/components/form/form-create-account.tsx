@@ -73,7 +73,7 @@ export default function FormCreateAccount({ setShowModal, setRefresh, dataList, 
         <>
             <form
                 onSubmit={(e) => {
-                    handleSubmit(e, user?.idUser || 0);
+                    handleSubmit(e, user?.id_user || 0);
                 }}
                 className='flex flex-col items-center w-full max-w-xl mx-auto bg-white'>
                 <div className='flex items-center gap-4 w-1/2 mr-6 ml-6 mb-2'>

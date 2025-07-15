@@ -53,7 +53,7 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: A
     });
 
     const data = await fetchData.json();
-    updateUser({ avatar: data.avatar });
+    updateUser({ ...user, avatar: data.avatar });
     setRefresh((prevRefresh) => !prevRefresh);
   }
 
@@ -78,7 +78,7 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: A
                         name="avatar"
                         className='mt-2'
                         checked={selectedAvatar === index}
-                        onChange={() => updateAvatar(index, user?.idUser || 0)}
+                        onChange={() => updateAvatar(index, user?.id_user || 0)}
                       />
                     </div>
                   ))}

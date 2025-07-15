@@ -2,15 +2,22 @@
 import { createContext, useState, type JSX } from "react";
 import type { IUser } from "../types/interfaces";
 
-export const UserContext = createContext({
-    user: {
-        firstname: "",
-        lastname: "",
-        avatar: 0,
-        email: "",
-        idUser: 1,
-    },
-    updateUser: (_newUser: IUser) => { },
+type IUserContext = {
+    id_user: number;
+    firstname: string;
+    lastname: string;
+    avatar: number;
+    email: string;
+}
+
+type UserContextType = {
+    user: IUserContext;
+    updateUser: (newUser: IUserContext) => void;
+};
+
+export const UserContext = createContext<UserContextType>({
+    user: {} as IUserContext,
+    updateUser: (_newUser: IUserContext) => { },
 });
 
 export function UserProvider({ children, userContext }: { children: JSX.Element; userContext: IUser | null }): JSX.Element {
@@ -19,10 +26,10 @@ export function UserProvider({ children, userContext }: { children: JSX.Element;
         lastname: userContext?.lastname || "User",
         avatar: userContext?.avatar || 1,
         email: userContext?.email || "test.user@example.com",
-        idUser: userContext?.id_user || 1,
+        id_user: userContext?.id_user || 1,
     });
 
-    const updateUser = (newUser: IUser) => {
+    const updateUser = (newUser: IUserContext) => {
         setUser((prevUser) => ({
             ...prevUser,
             ...newUser,
