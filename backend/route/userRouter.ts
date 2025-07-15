@@ -8,6 +8,23 @@ userRouter.get("/user", async (_req, res) => {
     res.json(result.rows);
 })
 
+userRouter.post("/user/:idUser/avatar/:avatar", async (req, res) => {
+    console.log("/user/:idUser/avatar/:avatar")
+    const { idUser, avatar } = req.params;
+    const preparedQuery = {
+        text: `UPDATE users 
+            SET avatar = $1 
+            WHERE id_user = $2 
+            RETURNING *`,
+        values: [avatar, idUser],
+    };
+    const result = await client_pg.query(preparedQuery);
+    const user = result.rows[0];
+
+    res.json(user);
+})
+
+
 userRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const preparedQuery = {

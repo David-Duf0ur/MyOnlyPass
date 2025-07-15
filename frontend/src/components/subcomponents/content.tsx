@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { ICredential, IFields, IUser } from '../../types/interfaces'
+import type { ICredential, IFields } from '../../types/interfaces'
 import AddField from '../modal/add-field';
 import FormAccount from '../form/form-account';
 
@@ -8,10 +8,9 @@ interface ContentProps {
   setData: (data: ICredential | undefined) => void;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
-  user: IUser | null;
 }
 
-export default function Content({ data, setData, setRefresh, refresh, user }: ContentProps) {
+export default function Content({ data, setData, setRefresh, refresh }: ContentProps) {
   const [showModal, setShowModal] = useState(false);
   const [fields, setFields] = useState<IFields[]>([]);
 
@@ -79,7 +78,7 @@ export default function Content({ data, setData, setRefresh, refresh, user }: Co
             )}
           </div>
           <div className='mt-6 mb-6'>
-            < FormAccount user={user} setRefresh={setRefresh} setFields={setFields} data={data} fields={fields} />
+            < FormAccount setRefresh={setRefresh} setFields={setFields} data={data} fields={fields} />
           </div>
           <div onClick={() => setShowModal(true)} className='flex items-center gap-2 mb-4 cursor-pointer hover:underline'>
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="currentColor" d="M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13s13-5.832 13-13S23.168 3 16 3m0 2c6.087 0 11 4.913 11 11s-4.913 11-11 11S5 22.087 5 16S9.913 5 16 5m-1 5v5h-5v2h5v5h2v-5h5v-2h-5v-5z" /></svg>
@@ -92,7 +91,7 @@ export default function Content({ data, setData, setRefresh, refresh, user }: Co
         </div>
       )}
       {showModal && (
-        <AddField user={user} data={data} fields={fields} setFields={setFields} setShowModal={setShowModal} setRefresh={setRefresh} />
+        <AddField data={data} fields={fields} setFields={setFields} setShowModal={setShowModal} setRefresh={setRefresh} />
       )}
     </>
   )

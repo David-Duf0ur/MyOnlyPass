@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import LeftSection from '../components/subcomponents/left-section'
 import RightSection from '../components/subcomponents/right-section'
 import type { ICredential, IUser } from '../types/interfaces'
+import { UserProvider } from '../context/UserContext';
 
 export interface ICredentialFields {
     setLog: (log: boolean) => void;
@@ -9,6 +10,7 @@ export interface ICredentialFields {
 }
 
 export default function Corps({ setLog, user }: ICredentialFields) {
+
     const [dataList, setDataList] = useState<ICredential[]>([])
     const [dataListFull, setDataListFull] = useState<ICredential[]>([])
     const [data, setData] = useState<ICredential | undefined>(undefined)
@@ -16,7 +18,6 @@ export default function Corps({ setLog, user }: ICredentialFields) {
     const [refresh, setRefresh] = useState(false)
     const [pagTotalItems, setPagTotalItems] = useState(4)
     const [pagTotalPages, setPagTotalPages] = useState(1)
-
     const [itemFilter, setItemFilter] = useState<string>('all')
     const [dataListFavorites, setDataListFavorites] = useState<ICredential[]>([]);
 
@@ -75,20 +76,22 @@ export default function Corps({ setLog, user }: ICredentialFields) {
     return (
         <div className='flex'>
             <LeftSection itemFilter={itemFilter} setItemFilter={setItemFilter} />
-            <RightSection
-                pagTotalItems={pagTotalItems}
-                pagTotalPages={pagTotalPages}
-                dataList={sortData(currentDataList)}
-                setDataList={currentSetDataList}
-                dataListFull={dataListFull}
-                setData={setData}
-                data={data}
-                refresh={refresh}
-                setRefresh={setRefresh}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-                setLog={setLog}
-                user={user} />
+            <UserProvider userContext={user}>
+                <RightSection
+                    pagTotalItems={pagTotalItems}
+                    pagTotalPages={pagTotalPages}
+                    dataList={sortData(currentDataList)}
+                    setDataList={currentSetDataList}
+                    dataListFull={dataListFull}
+                    setData={setData}
+                    data={data}
+                    refresh={refresh}
+                    setRefresh={setRefresh}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    setLog={setLog}
+                />
+            </UserProvider>
         </div>
     )
 }

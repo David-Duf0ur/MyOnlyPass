@@ -2,6 +2,7 @@ export interface IUser {
   id_user: number;
   firstname: string;
   lastname: string;
+  avatar: number;
   email: string;
   password: string;
   created_at: string;

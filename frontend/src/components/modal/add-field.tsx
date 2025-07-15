@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import type { ICredential, IUser } from "../../types/interfaces";
+import { UserContext } from "../../context/UserContext";
 
 
 interface AddFieldProps {
@@ -8,10 +9,10 @@ interface AddFieldProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   data: ICredential | undefined;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-  user: IUser | null;
 }
 
-export default function AddField({ setShowModal, data, setRefresh, user }: AddFieldProps) {
+export default function AddField({ setShowModal, data, setRefresh }: AddFieldProps) {
+  const { user } = useContext(UserContext);
   const [fieldName, setFieldName] = useState<string>('');
   const [fieldValue, setFieldValue] = useState<string>('');
 
@@ -52,7 +53,7 @@ export default function AddField({ setShowModal, data, setRefresh, user }: AddFi
                 </div>
                 <div className='flex flex-col mb-4'>
                   <button onClick={(e) => {
-                    handleClick(e, data?._id || '', user?.id_user || 0);
+                    handleClick(e, data?._id || '', user?.idUser || 0);
                   }} className='bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg'>Add</button>
                 </div>
               </form>

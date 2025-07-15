@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import type { ICredential, IUser } from '../../types/interfaces'
+import { useContext, useState } from 'react';
+import type { ICredential } from '../../types/interfaces'
 import CreateAccount from '../modal/create-account';
+import { UserContext } from '../../context/UserContext';
 
 interface ContentNavProps {
   dataList: ICredential[];
@@ -12,10 +13,10 @@ interface ContentNavProps {
   refresh: boolean;
   pagTotalItems: number;
   pagTotalPages: number;
-  user: IUser | null;
 }
 
-export default function ContentNav({ user, dataList, setDataList, setData, sortBy, setSortBy, setRefresh, pagTotalPages }: ContentNavProps) {
+export default function ContentNav({ dataList, setDataList, setData, sortBy, setSortBy, setRefresh, pagTotalPages }: ContentNavProps) {
+  const { user } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
 
   const fetchData = async (page: number, userId: number) => {
@@ -66,7 +67,7 @@ export default function ContentNav({ user, dataList, setDataList, setData, sortB
           {<div className='flex flex-wrap gap-2 justify-center m-4'>
             {Array.from({ length: pagTotalPages }).map((_, idx) => (
               <button
-                onClick={() => fetchData(idx + 1, user?.id_user || 0)}
+                onClick={() => fetchData(idx + 1, user?.idUser || 0)}
                 className='cursor-pointer focus:underline focus:text-3xl active:text-3xl text-1xl' key={idx}>
                 {idx + 1}
               </button>
@@ -77,7 +78,6 @@ export default function ContentNav({ user, dataList, setDataList, setData, sortB
       </div>
       {showModal && (
         <CreateAccount
-          user={user}
           setShowModal={setShowModal}
           setRefresh={setRefresh}
           dataList={dataList}

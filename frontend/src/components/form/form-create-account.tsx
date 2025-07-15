@@ -1,15 +1,16 @@
-import { useState } from "react";
-import type { ICredential, IUser } from "../../types/interfaces";
+import { useContext, useState } from "react";
+import type { ICredential } from "../../types/interfaces";
+import { UserContext } from "../../context/UserContext";
 
 interface FormCreateAccountProps {
     setShowModal: (show: boolean) => void;
     setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
     dataList: ICredential[];
     setData: (data: ICredential | undefined) => void;
-    user: IUser | null;
 }
 
-export default function FormCreateAccount({ setShowModal, setRefresh, dataList, setData, user }: FormCreateAccountProps) {
+export default function FormCreateAccount({ setShowModal, setRefresh, dataList, setData }: FormCreateAccountProps) {
+    const { user } = useContext(UserContext);
     const [toggleEyes, setToggleEyes] = useState<boolean>(false);
     const [email, setEmail] = useState<string>("empty");
     const [password, setPassword] = useState<string>("empty");
@@ -72,7 +73,7 @@ export default function FormCreateAccount({ setShowModal, setRefresh, dataList, 
         <>
             <form
                 onSubmit={(e) => {
-                    handleSubmit(e, user?.id_user || 0);
+                    handleSubmit(e, user?.idUser || 0);
                 }}
                 className='flex flex-col items-center w-full max-w-xl mx-auto bg-white'>
                 <div className='flex items-center gap-4 w-1/2 mr-6 ml-6 mb-2'>

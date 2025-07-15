@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import type { ICredential, IUser } from "../../types/interfaces";
-import { DataContext } from "../../context/dataContext";
-
+import type { ICredential } from "../../types/interfaces";
+import { UserContext } from "../../context/UserContext";
 
 
 interface FormAccountProps {
@@ -9,11 +8,11 @@ interface FormAccountProps {
     setFields: React.Dispatch<React.SetStateAction<{ name: string; value: string }[]>>;
     data: ICredential | undefined;
     fields: { name: string; value: string }[];
-    user: IUser | null;
 }
 
-export default function FormAccount({ setRefresh, data, fields, user }: FormAccountProps) {
-    const test = useContext(DataContext);
+export default function FormAccount({ setRefresh, data, fields }: FormAccountProps) {
+    const { user } = useContext(UserContext);
+
     const [email, setEmail] = useState<string>(data?.mail || "empty");
     const [password, setPassword] = useState<string>(data?.passwordEncrypted || "empty");
     const [url, setUrl] = useState<string>(data?.url || "empty");
@@ -42,7 +41,7 @@ export default function FormAccount({ setRefresh, data, fields, user }: FormAcco
         });
 
         for (const fieldName in customFieldValues) {
-            await fetch(`http://localhost:3000/credential/fields/${data?._id}/${fieldName}/${user?.id_user}`, {
+            await fetch(`http://localhost:3000/credential/fields/${data?._id}/${fieldName}/${user?.idUser}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,7 +95,7 @@ export default function FormAccount({ setRefresh, data, fields, user }: FormAcco
             <form
                 className='flex flex-col items-center mx-auto p-6'
                 onSubmit={(e) => {
-                    handleSubmit(e, data?._id || '', user?.id_user || 0);
+                    handleSubmit(e, data?._id || '', user?.idUser || 0);
                     setRefresh((prevRefresh) => !prevRefresh);
                 }}>
                 <div className='flex items-center gap-4 w-1/2 mr-6 ml-6 mb-2'>
@@ -109,7 +108,6 @@ export default function FormAccount({ setRefresh, data, fields, user }: FormAcco
                         <div className='w-[500px]'></div>
                         {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 17.175V6.825q0-.425.3-.713t.7-.287q.125 0 .263.037t.262.113l8.15 5.175q.225.15.338.375t.112.475t-.112.475t-.338.375l-8.15 5.175q-.125.075-.262.113T9 18.175q-.4 0-.7-.288t-.3-.712" /></svg> */}
                     </div>
-                    <p>Test contexte REACT : {test.theme}</p>
                     <div className='flex flex-col mb-4'>
                         <label htmlFor="email_field" className="">Email</label>
                         <input onChange={e => setEmail(e.target.value)} id="email_field" value={email} className="bg-amber-200 p-2 rounded-lg w-64" type="email" name="input-email" title="Account email" placeholder="example@example.com"></input>
@@ -142,7 +140,7 @@ export default function FormAccount({ setRefresh, data, fields, user }: FormAcco
                                 <div key={index} className='flex flex-col mb-4'>
                                     <div className='flex items-center gap-2 cursor-pointer w-64'>
                                         <label htmlFor={field.name} className="">{field.name}</label>
-                                        <svg onClick={() => deleteField(data?._id || '', field.name, user?.id_user || 0)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
+                                        <svg onClick={() => deleteField(data?._id || '', field.name, user?.idUser || 0)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
                                     </div>
                                     <input onChange={e => handleCustomFieldChange(field.name, e.target.value)} id={field.name} value={customFieldValues[field.name] || ''} className="bg-amber-200 p-2 rounded-lg w-64" type="text" name={field.name} title={field.name} placeholder={field.name}></input>
                                 </div>

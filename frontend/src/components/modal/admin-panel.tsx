@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { ICredential, IFields, IUser } from "../../types/interfaces";
+import { useContext, useState } from "react";
+import type { ICredential, IFields } from "../../types/interfaces";
 import avatar1 from "../../assets/avatar/avatar1.jpg";
 import avatar2 from "../../assets/avatar/avatar2.jpg";
 import avatar3 from "../../assets/avatar/avatar3.jpg";
@@ -7,18 +7,23 @@ import avatar4 from "../../assets/avatar/avatar4.jpg";
 import avatar5 from "../../assets/avatar/avatar5.jpg";
 import avatar6 from "../../assets/avatar/avatar6.jpg";
 
+import { UserContext } from "../../context/UserContext";
+
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
 interface AdminPanelProps {
   setShowModal: (show: boolean) => void;
   dataListFull: ICredential[];
-  user: IUser | null;
-  selectedAvatar: number;
-  setSelectedAvatar: (avatar: number) => void;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>
+  refresh: boolean;
 }
 
-export default function AdminPanel({ setShowModal, dataListFull, user, selectedAvatar, setSelectedAvatar }: AdminPanelProps) {
+export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: AdminPanelProps) {
+
+  const { user, updateUser } = useContext(UserContext);
+
   const [csvData, setCsvData] = useState<string>("");
+  const [selectedAvatar, setSelectedAvatar] = useState<number>(user.avatar || 0);
 
   function convertToCSV(data: ICredential[] | IFields[]): string {
     if (data.length === 0) return "No data available";
@@ -37,7 +42,20 @@ export default function AdminPanel({ setShowModal, dataListFull, user, selectedA
     return [headers.join(","), ...rows].join("\r\n");
   }
 
+  const updateAvatar = async (index: number, idUser: number) => {
+    setSelectedAvatar(index);
 
+    const fetchData = await fetch(`http://localhost:3000/user/${idUser}/avatar/${index}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await fetchData.json();
+    updateUser({ avatar: data.avatar });
+    setRefresh((prevRefresh) => !prevRefresh);
+  }
 
   return (
     <>
@@ -54,13 +72,13 @@ export default function AdminPanel({ setShowModal, dataListFull, user, selectedA
                 <div className="flex items-center justify-center mb-4 gap-2">
                   {avatars.map((avatar, index) => (
                     <div key={index} className='flex flex-col items-center'>
-                      <img key={index} src={avatar} alt={`Avatar ${index + 1}`} className={`w-12 h-12 rounded-full inline-block transition-all duration-200 ${selectedAvatar === index ? "border-4 border-blue-500" : "border-2 border-transparent"}`} />
+                      <img key={index} src={avatar} alt={`Avatar ${index}`} className={`w-12 h-12 rounded-full inline-block transition-all duration-200 ${selectedAvatar === index ? "border-4 border-blue-500" : "border-2 border-transparent"}`} />
                       <input
                         type="radio"
                         name="avatar"
                         className='mt-2'
                         checked={selectedAvatar === index}
-                        onChange={() => setSelectedAvatar(index)}
+                        onChange={() => updateAvatar(index, user?.idUser || 0)}
                       />
                     </div>
                   ))}
@@ -119,3 +137,5 @@ export default function AdminPanel({ setShowModal, dataListFull, user, selectedA
     </>
   )
 }
+
+

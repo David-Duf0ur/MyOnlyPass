@@ -1,7 +1,7 @@
 BEGIN;
 
-INSERT INTO users (firstname, lastname, email, password)
+INSERT INTO users (firstname, lastname, avatar, email, password)
 VALUES 
-('David', 'DUFOUR', 'david.dufour@example.com', 'password123');
+('David', 'DUFOUR', 0, 'david.dufour@example.com', 'password123');
 
 COMMIT;
