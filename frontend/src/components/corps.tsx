@@ -89,7 +89,6 @@ export default function Corps({ setLog }: ICredentialFields) {
                 setSortBy={setSortBy}
                 setLog={setLog}
             />
-
         </div>
     )
 }

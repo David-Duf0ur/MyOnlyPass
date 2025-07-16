@@ -8,6 +8,8 @@ import avatar5 from "../../assets/avatar/avatar5.jpg";
 import avatar6 from "../../assets/avatar/avatar6.jpg";
 
 import { UserContext } from "../../context/UserContext";
+import Loader from "../subcomponents/loader/loader";
+import LoaderWrapper from "../subcomponents/loader-wrapper";
 
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
@@ -16,9 +18,10 @@ interface AdminPanelProps {
   dataListFull: ICredential[];
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
+  setLog: (log: boolean) => void;
 }
 
-export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: AdminPanelProps) {
+export default function AdminPanel({ setShowModal, dataListFull, setRefresh, setLog }: AdminPanelProps) {
   const { user, updateUser } = useContext(UserContext);
 
   const [firstname, setFirstname] = useState<string>(user?.firstname || "");
@@ -74,6 +77,22 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: A
     setRefresh((prevRefresh) => !prevRefresh);
   }
 
+  const deleteAccount = async () => {
+    const fetchData = await fetch(`http://localhost:3000/user/${user?.id_user}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (fetchData.ok) {
+      setShowModal(false);
+      setLog(false)
+    } else {
+      console.error("Error deleting account:", fetchData.statusText);
+    }
+  }
+
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center bg-gray-600/60">
@@ -115,19 +134,25 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh }: A
                     <label className='text-m'>Last Name</label>
                     <input className="bg-amber-200 p-2 rounded-lg w-64" type="text" value={lastname} onChange={(e) => setLastname(e.target.value)} />
                   </div>
-                  <button className='self-center w-24 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2'>Save</button>
+                  <div className="self-center flex items-center gap-2">
+                    <LoaderWrapper>
+                      <button className='self-center w-24 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2'>Save</button>
+                    </LoaderWrapper>
+                  </div>
                 </form>
                 <div className="border-b-2 border-black"></div>
                 <h3 className='text-lg font-semibold'>Account management</h3>
-                <div className="flex flex-col items-center justify-between mt-4">
-                  <button className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Delete account</button>
+                <div className="self-center flex items-center gap-2">
+                  <LoaderWrapper>
+                    <button onClick={deleteAccount} className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Delete account</button>
+                  </LoaderWrapper>
                 </div>
               </div>
               <div className="border-b-2 border-black"></div>
               <h3 className='text-lg font-semibold'>Data List</h3>
               <ul className='pl-5'>
                 {dataListFull.map((item, index) => (
-                  <li key={index} className='text-m'>{item._id} - {item.title}</li>
+                  <li key={index} className='text-m'>{item.title} - id: {item._id}</li>
                 ))}
               </ul>
               <div className="flex items-center justify-center gap-2 mt-4">

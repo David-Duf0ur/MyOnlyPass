@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import type { ICredential } from "../../types/interfaces";
 import { UserContext } from "../../context/UserContext";
+import LoaderWrapper from "../subcomponents/loader-wrapper";
 
 
 interface FormAccountProps {
@@ -148,7 +149,9 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
                         </div>
                     )}
                     <div className='flex flex-col mb-4'>
-                        <button className='bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg'>Save</button>
+                        <LoaderWrapper>
+                            <button className='bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg'>Save</button>
+                        </LoaderWrapper>
                     </div>
                 </div>
             </form>

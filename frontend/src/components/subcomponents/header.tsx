@@ -40,7 +40,7 @@ export default function Header({ setLog, dataListFull, setData, setRefresh, refr
         </div>
       </div>
       {showModal && (
-        <AdminPanel setShowModal={setShowModal} dataListFull={dataListFull} setRefresh={setRefresh} refresh={refresh} />
+        <AdminPanel setLog={setLog} setShowModal={setShowModal} dataListFull={dataListFull} setRefresh={setRefresh} refresh={refresh} />
       )}
     </>
   )

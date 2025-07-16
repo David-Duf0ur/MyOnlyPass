@@ -6,7 +6,7 @@ interface FormLoginProps {
 }
 
 export default function FormLogin({ setLog }: FormLoginProps) {
-    const { user, updateUser } = useContext(UserContext);
+    const { updateUser } = useContext(UserContext);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -22,15 +22,12 @@ export default function FormLogin({ setLog }: FormLoginProps) {
             body: JSON.stringify({ email, password }),
         });
         const data = await response.json();
-        console.log('**********', data)
         if (!response.ok) {
-            console.error("Login failed:", data);
             setLog(false);
             setErrorMessage("Login failed. Please try again.");
             return;
         }
         updateUser({ ...data });
-        console.log('$$$$$$$$', user)
         setLog(true);
         setErrorMessage("");
     };
