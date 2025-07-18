@@ -88,4 +88,13 @@ credentialRouter.post("/credential/:idCredential/:userId", async (req, res) => {
     res.json(result);
 })
 
+// Récupération de toutes les catégories d'un utilisateur
+credentialRouter.get("/categories/:userId", async (req, res) => {
+    console.log("/categories/:userId")
+    const userId = parseInt(req.params.userId, 10);
+    const db = client_mongo.db("credentials");
+    const result = await db.collection("credentials").distinct("category", { userId });
+    res.json(result);
+})
+
 export { credentialRouter };

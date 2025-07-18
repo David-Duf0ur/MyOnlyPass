@@ -1,22 +1,23 @@
 import React, { useContext, useState } from "react";
 import type { ICredential } from "../../types/interfaces";
 import { UserContext } from "../../context/UserContext";
+import Button from "../globalcomponents/Button";
 
 
 interface AddFieldProps {
   fields: { name: string; value: string }[];
   setFields: React.Dispatch<React.SetStateAction<{ name: string; value: string }[]>>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  data: ICredential | undefined;
+  credentialSelected: ICredential | undefined;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function AddField({ setShowModal, data, setRefresh }: AddFieldProps) {
+export default function AddField({ setShowModal, credentialSelected, setRefresh }: AddFieldProps) {
   const { user } = useContext(UserContext);
   const [fieldName, setFieldName] = useState<string>('');
   const [fieldValue, setFieldValue] = useState<string>('');
 
-  const handleClick = async (e: React.FormEvent, idCredential: string, idUser: number) => {
+  const handleClick = async (e: React.MouseEvent, idCredential: string, idUser: number) => {
     e.preventDefault();
     await fetch(`http://localhost:3000/credential/fields/${idCredential}/${idUser}`, {
       method: 'POST',
@@ -52,9 +53,9 @@ export default function AddField({ setShowModal, data, setRefresh }: AddFieldPro
                   <input value={fieldValue} onChange={e => setFieldValue(e.target.value)} id="value_field" className="bg-amber-200 p-2 rounded-lg w-64" type="text" name="input-value" title="Account value" placeholder="fbx123456"></input>
                 </div>
                 <div className='flex flex-col mb-4'>
-                  <button onClick={(e) => {
-                    handleClick(e, data?._id || '', user?.id_user || 0);
-                  }} className='bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg'>Add</button>
+                  <Button buttonName="Add" onClick={(e) => {
+                    handleClick(e, credentialSelected?._id || '', user?.id_user || 0);
+                  }} />
                 </div>
               </form>
             </div>

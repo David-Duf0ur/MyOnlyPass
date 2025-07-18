@@ -8,8 +8,8 @@ import avatar5 from "../../assets/avatar/avatar5.jpg";
 import avatar6 from "../../assets/avatar/avatar6.jpg";
 
 import { UserContext } from "../../context/UserContext";
-import Loader from "../subcomponents/loader/loader";
 import LoaderWrapper from "../subcomponents/loader-wrapper";
+import Button from "../globalcomponents/Button";
 
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
@@ -136,7 +136,7 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                   </div>
                   <div className="self-center flex items-center gap-2">
                     <LoaderWrapper>
-                      <button className='self-center w-24 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2'>Save</button>
+                      <Button buttonName="Save" />
                     </LoaderWrapper>
                   </div>
                 </form>
@@ -144,7 +144,10 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                 <h3 className='text-lg font-semibold'>Account management</h3>
                 <div className="self-center flex items-center gap-2">
                   <LoaderWrapper>
-                    <button onClick={deleteAccount} className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Delete account</button>
+                    <>
+                      <p className="mr-72">Delete your account : </p>
+                      <Button buttonName="Delete" onClick={() => deleteAccount()} />
+                    </>
                   </LoaderWrapper>
                 </div>
               </div>
@@ -156,14 +159,10 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                 ))}
               </ul>
               <div className="flex items-center justify-center gap-2 mt-4">
-                <button onClick={() => {
+                <Button buttonName="Export" onClick={() => {
                   setCsvData(convertToCSV(dataListFull));
-                }} className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>
-                  Export
-                </button>
-                <button className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>
-                  Import
-                </button>
+                }} />
+                <Button buttonName="Import" />
               </div>
               {csvData && (
                 <>
@@ -176,9 +175,7 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                     />
                   </div>
                   <div className="w-full flex items-center justify-center p-4 rounded-b-lg">
-                    <button onClick={() => setCsvData("")} className='bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded'>
-                      Clear
-                    </button>
+                    <Button buttonName="Clear" onClick={() => setCsvData("")} variant="red" />
                   </div>
                 </>
               )}

@@ -14,13 +14,12 @@ const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
 interface HeaderProps {
   dataListFull: ICredential[];
-  setData: (data: ICredential | undefined) => void;
   setLog: (log: boolean) => void;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
 }
 
-export default function Header({ setLog, dataListFull, setData, setRefresh, refresh }: HeaderProps) {
+export default function Header({ setLog, dataListFull, setRefresh, refresh }: HeaderProps) {
 
   const { user } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
@@ -32,7 +31,6 @@ export default function Header({ setLog, dataListFull, setData, setRefresh, refr
         <div className="flex flex-row gap-2 mr-2 items-center">
           <img onClick={() => {
             setShowModal(true)
-            setData(undefined);
           }} src={avatars[user.avatar]} className='w-10 h-10 rounded-full object-cover border-2 border-white cursor-pointer hover:border-amber-300 hover:scale-110 transition-transform duration-200' />
           <button className='bg-amber-200 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-amber-300'>
             <svg onClick={() => setLog(false)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m22 12l-4-4v3h-8v2h8v3m2 2a10 10 0 1 1 0-12h-2.73a8 8 0 1 0 0 12Z" /></svg>

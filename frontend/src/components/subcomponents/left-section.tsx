@@ -1,7 +1,8 @@
 import logo from '../../assets/logo.svg';
 import bg2 from '../../assets/bg-2.jpg';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import PassGenerator from '../modal/pass-generator';
+import { FilterContext } from '../../context/FilterContext';
 
 
 interface ILeftSectionProps {
@@ -10,6 +11,7 @@ interface ILeftSectionProps {
 }
 
 export default function LeftSection({ itemFilter, setItemFilter }: ILeftSectionProps) {
+  const { setFilter } = useContext(FilterContext);
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -25,7 +27,10 @@ export default function LeftSection({ itemFilter, setItemFilter }: ILeftSectionP
         <ol className='mt-[100px]'>
           <li className='text-3xl'>Navigation</li>
           <ol className='mb-4'>
-            <li onClick={() => setItemFilter("all")}
+            <li onClick={() => {
+              setItemFilter("all");
+              setFilter('all');
+            }}
               className={
                 'flex content-center items-center gap-2 ml-4 mt-4 cursor-pointer' +
                 (itemFilter === "all" ? ' underline' : '')
@@ -33,7 +38,10 @@ export default function LeftSection({ itemFilter, setItemFilter }: ILeftSectionP
               <svg className='hover:w-[30px] hover:h-[30px]' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21v-5h2v3h3v2zm13 0v-2h3v-3h2v5zm-4-2q-2.9 0-4.95-2.05T5 12t2.05-4.95T12 5t4.95 2.05T19 12t-2.05 4.95T12 19M3 8V3h5v2H5v3zm16 0V5h-3V3h5v5z" /></svg>
               <p className='text-2xl'>All items</p>
             </li>
-            <li onClick={() => setItemFilter("favorites")}
+            <li onClick={() => {
+              setItemFilter("favorites");
+              setFilter('favorites');
+            }}
               className={
                 'flex content-center items-center gap-2 ml-4 mt-4 cursor-pointer' +
                 (itemFilter === "favorites" ? ' underline' : '')

@@ -2,22 +2,22 @@ import { useContext, useEffect, useState } from "react";
 import type { ICredential } from "../../types/interfaces";
 import { UserContext } from "../../context/UserContext";
 import LoaderWrapper from "../subcomponents/loader-wrapper";
+import Button from "../globalcomponents/Button";
 
 
 interface FormAccountProps {
     setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-    setFields: React.Dispatch<React.SetStateAction<{ name: string; value: string }[]>>;
-    data: ICredential | undefined;
     fields: { name: string; value: string }[];
+    credentialSelected: ICredential | undefined;
 }
 
-export default function FormAccount({ setRefresh, data, fields }: FormAccountProps) {
+export default function FormAccount({ setRefresh, credentialSelected, fields }: FormAccountProps) {
     const { user } = useContext(UserContext);
 
-    const [email, setEmail] = useState<string>(data?.mail || "empty");
-    const [password, setPassword] = useState<string>(data?.passwordEncrypted || "empty");
-    const [url, setUrl] = useState<string>(data?.url || "empty");
-    const [title, setTitle] = useState<string>(data?.title || "empty");
+    const [email, setEmail] = useState<string>(credentialSelected?.mail || "empty");
+    const [password, setPassword] = useState<string>(credentialSelected?.passwordEncrypted || "empty");
+    const [url, setUrl] = useState<string>(credentialSelected?.url || "empty");
+    const [title, setTitle] = useState<string>(credentialSelected?.title || "empty");
     const [toggleEyes, setToggleEyes] = useState<boolean>(false);
     const [iconifyLink, setIconifyLink] = useState<string>('')
     const [customFieldValues, setCustomFieldValues] = useState<{ [key: string]: string }>(
@@ -36,13 +36,13 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
                 mail: email,
                 passwordEncrypted: password,
                 url: url,
-                favorite: data?.favorite,
+                favorite: credentialSelected?.favorite,
                 iconify: iconifyLink
             })
         });
 
         for (const fieldName in customFieldValues) {
-            await fetch(`http://localhost:3000/credential/fields/${data?._id}/${fieldName}/${user?.id_user}`, {
+            await fetch(`http://localhost:3000/credential/fields/${credentialSelected?._id}/${fieldName}/${user?.id_user}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -80,12 +80,12 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
     };
 
     useEffect(() => {
-        setEmail(data?.mail || "empty");
-        setPassword(data?.passwordEncrypted || "empty");
-        setUrl(data?.url || "empty");
-        setTitle(data?.title || "empty");
-        setIconifyLink(data?.iconify || iconifyLink)
-    }, [data]);
+        setEmail(credentialSelected?.mail || "empty");
+        setPassword(credentialSelected?.passwordEncrypted || "empty");
+        setUrl(credentialSelected?.url || "empty");
+        setTitle(credentialSelected?.title || "empty");
+        setIconifyLink(credentialSelected?.iconify || iconifyLink)
+    }, [credentialSelected]);
 
     useEffect(() => {
         setCustomFieldValues(fields.reduce((acc, field) => ({ ...acc, [field.name]: field.value }), {}));
@@ -96,7 +96,7 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
             <form
                 className='flex flex-col items-center mx-auto p-6'
                 onSubmit={(e) => {
-                    handleSubmit(e, data?._id || '', user?.id_user || 0);
+                    handleSubmit(e, credentialSelected?._id || '', user?.id_user || 0);
                     setRefresh((prevRefresh) => !prevRefresh);
                 }}>
                 <div className='flex items-center gap-4 w-1/2 mr-6 ml-6 mb-2'>
@@ -141,7 +141,7 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
                                 <div key={index} className='flex flex-col mb-4'>
                                     <div className='flex items-center gap-2 cursor-pointer w-64'>
                                         <label htmlFor={field.name} className="">{field.name}</label>
-                                        <svg onClick={() => deleteField(data?._id || '', field.name, user?.id_user || 0)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
+                                        <svg onClick={() => deleteField(credentialSelected?._id || '', field.name, user?.id_user || 0)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
                                     </div>
                                     <input onChange={e => handleCustomFieldChange(field.name, e.target.value)} id={field.name} value={customFieldValues[field.name] || ''} className="bg-amber-200 p-2 rounded-lg w-64" type="text" name={field.name} title={field.name} placeholder={field.name}></input>
                                 </div>
@@ -150,7 +150,7 @@ export default function FormAccount({ setRefresh, data, fields }: FormAccountPro
                     )}
                     <div className='flex flex-col mb-4'>
                         <LoaderWrapper>
-                            <button className='bg-blue-400 hover:bg-blue-500 text-white pt-1 pb-1 pr-4 pl-4 rounded-lg'>Save</button>
+                            <Button buttonName="Save" />
                         </LoaderWrapper>
                     </div>
                 </div>

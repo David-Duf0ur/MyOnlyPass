@@ -1,5 +1,5 @@
 import { useState, type JSX } from "react";
-import Loader from "./loader/loader";
+import Loader from "./loader";
 import React from "react";
 
 export default function LoaderWrapper({ children }: { children: JSX.Element }): JSX.Element {
