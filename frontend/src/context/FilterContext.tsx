@@ -3,7 +3,7 @@ import { createContext, useState, type JSX } from "react";
 export const FilterContext = createContext({
     filter: 'all',
     setFilter: (_filter: string) => { },
-    orderdBy: 'nom',
+    orderdBy: 'title',
     setOrderdBy: (_orderedBy: string) => { },
     search: '',
     setSearch: (_search: string) => { },
@@ -11,7 +11,7 @@ export const FilterContext = createContext({
 
 export function FilterProvider({ children }: { children: JSX.Element }): JSX.Element {
     const [filter, setFilter] = useState('all');
-    const [orderdBy, setOrderdBy] = useState('nom');
+    const [orderdBy, setOrderdBy] = useState('title');
     const [search, setSearch] = useState('');
 
     return (

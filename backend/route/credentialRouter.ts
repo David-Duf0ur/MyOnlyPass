@@ -21,6 +21,16 @@ credentialRouter.get("/credentials/full/:userId", async (req, res) => {
     res.json(result);
 })
 
+// Récupération d'un crédential avec le nom le plus proche pour un utilisateur
+credentialRouter.get("/credentials/closest/:userId/:name", async (req, res) => {
+    console.log("/credentials/closest/:userId/:name")
+    const userId = parseInt(req.params.userId, 10);
+    const name = req.params.name;
+    const db = client_mongo.db("credentials");
+    const result = await db.collection("credentials").find({ userId, title: { $regex: name, $options: "i" } }).sort({ title: 1 }).toArray();
+    res.json(result);
+})
+
 // Récupération de tous les crédentials favoris d'un utilisateur
 credentialRouter.get("/credentials/favorites/:userId", async (req, res) => {
     console.log("/credentials/favorites/:userId")
@@ -31,22 +41,42 @@ credentialRouter.get("/credentials/favorites/:userId", async (req, res) => {
 })
 
 // Récupération de tous les crédentials d'un utilisateur avec pagination
-credentialRouter.get("/credentials/:page/:limit/:userId", async (req, res) => {
+credentialRouter.get("/credentials/:page/:limit/:userId/:filter/:orderBy", async (req, res) => {
     console.log("/credentials/:page/:limit/:userId")
     const page = parseInt(req.params.page, 10) || 1;      // Numéro de page (par défaut 1)
     const limit = parseInt(req.params.limit, 10) || 5;   // Nombre d'éléments par page (par défaut 4)
     const userId = parseInt(req.params.userId, 10);
     const skip = (page - 1) * limit;
 
+    const filter = req.params.filter || "all";
+    const orderBy = req.params.orderBy || "title";
+
     const db = client_mongo.db("credentials");
     const collection = db.collection("credentials");
 
     const totalItems = await collection.countDocuments({ userId }); // Nombre total d'éléments
-    const results = await collection
-        .find({ userId })
-        .skip(skip)
-        .limit(limit)
-        .toArray();
+
+    let results;
+
+    if (filter === "all") {
+
+        results = await collection
+            .find({ userId })
+            .sort({ [orderBy]: 1 })
+            .skip(skip)
+            .limit(limit)
+            .toArray();
+
+    } else if (filter === "favorites") {
+
+        results = await collection
+            .find({ userId, favorite: true })
+            .sort({ [orderBy]: 1 })
+            .skip(skip)
+            .limit(limit)
+            .toArray();
+
+    }
 
     res.json({
         totalItems,

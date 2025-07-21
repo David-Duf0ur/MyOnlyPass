@@ -21,7 +21,7 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
     const [url, setUrl] = useState<string>("empty");
     const [title, setTitle] = useState<string>("empty");
     const [toggleEyes, setToggleEyes] = useState<boolean>(false);
-    const [iconifyLink, _setIconifyLink] = useState<string>("empty");
+    const [iconifyLink, setIconifyLink] = useState<string>("empty");
 
 
 
@@ -97,6 +97,7 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
         setPassword(credentialSelected?.passwordEncrypted || '');
         setUrl(credentialSelected?.url || '');
         setTitle(credentialSelected?.title || '');
+        setIconifyLink(credentialSelected?.iconify || '');
 
     }, [credentialSelected]);
 

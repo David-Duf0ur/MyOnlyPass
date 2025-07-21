@@ -11,8 +11,8 @@ interface RightSectionProps {
   dataListFull: ICredential[];
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
-  sortBy: 'nom' | 'category' | 'mail';
-  setSortBy: React.Dispatch<React.SetStateAction<'nom' | 'category' | 'mail'>>;
+  sortBy: 'title' | 'category' | 'mail';
+  setSortBy: React.Dispatch<React.SetStateAction<'title' | 'category' | 'mail'>>;
   setLog: (value: boolean) => void;
 }
 
@@ -37,7 +37,7 @@ export default function RightSection({ setLog, dataListFull, setRefresh, refresh
     <div style={{ backgroundImage: `url(${bg1})` }} className='basis-3/4 flex flex-col bg-cover bg-center bg-no-repeat flex-1 h-full'>
       <Header setLog={setLog} dataListFull={dataListFull} setRefresh={setRefresh} refresh={refresh} />
       <div className='flex flex-col'>
-        <FormSearch />
+        <FormSearch setCredentialSelected={setCredentialSelected} credentialSelected={credentialSelected} />
         <div style={{ backgroundImage: `url(${bg2})` }}
           className='bg-cover bg-center bg-no-repeat flex m-4 rounded-lg border-1 border-white'>
           <ContentNav sortBy={sortBy} setSortBy={setSortBy} setRefresh={setRefresh} refresh={refresh} setCredentialSelected={setCredentialSelected} />

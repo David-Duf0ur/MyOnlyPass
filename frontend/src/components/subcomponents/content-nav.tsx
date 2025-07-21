@@ -5,8 +5,8 @@ import { UserContext } from '../../context/UserContext';
 import { FilterContext } from '../../context/FilterContext';
 
 interface ContentNavProps {
-  sortBy: 'nom' | 'category' | 'mail';
-  setSortBy: React.Dispatch<React.SetStateAction<'nom' | 'category' | 'mail'>>;
+  sortBy: 'title' | 'category' | 'mail';
+  setSortBy: React.Dispatch<React.SetStateAction<'title' | 'category' | 'mail'>>;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
   setCredentialSelected: React.Dispatch<React.SetStateAction<ICredential>>;
@@ -24,9 +24,9 @@ export default function ContentNav({ sortBy, setSortBy, setRefresh, refresh, set
   //Tools
   const [showModal, setShowModal] = useState(false);
 
-  const fetchData = async (page: number, userId: number) => {
+  const fetchData = async (page: number, userId: number, order: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/credentials/${page}/5/${userId}`)
+      const response = await fetch(`http://localhost:3000/credentials/${page}/5/${userId}/${filter}/${order}`)
       const dataFetch = await response.json()
       setCredentialsPagined(dataFetch.results)
       setPagTotalPage(dataFetch.totalPages)
@@ -36,20 +36,19 @@ export default function ContentNav({ sortBy, setSortBy, setRefresh, refresh, set
   }
 
   useEffect(() => {
-    fetchData(1, user?.id_user || 0)
-  }, [refresh]);
+    fetchData(1, user?.id_user || 0, orderdBy);
+  }, [refresh, filter]);
 
   return (
     <>
       <div className="flex flex-col basis-1/3">
-        <p>{filter} - {orderdBy}</p>
         <div className="flex gap-2 justify-center m-4">
           <select className="w-full" value={sortBy} onChange={(e) => {
-            setOrderdBy(e.target.value as 'nom' | 'category' | 'mail');
-            setSortBy(e.target.value as 'nom' | 'category' | 'mail')
+            setOrderdBy(e.target.value as 'title' | 'category' | 'mail');
+            setSortBy(e.target.value as 'title' | 'category' | 'mail')
             setRefresh((prevRefresh) => !prevRefresh);
           }}>
-            <option value="nom">Par nom</option>
+            <option value="title">Par nom</option>
             <option value="mail">Par mail</option>
             <option value='category'>Par category</option>
           </select>
@@ -81,7 +80,7 @@ export default function ContentNav({ sortBy, setSortBy, setRefresh, refresh, set
           {<div className='flex flex-wrap gap-2 justify-center m-4'>
             {Array.from({ length: pagTotalPage }).map((_, idx) => (
               <button
-                onClick={() => fetchData(idx + 1, user?.id_user || 0)}
+                onClick={() => fetchData(idx + 1, user?.id_user || 0, orderdBy)}
                 className='cursor-pointer focus:underline focus:text-3xl active:text-3xl text-1xl' key={idx}>
                 {idx + 1}
               </button>
