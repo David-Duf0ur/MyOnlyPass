@@ -63,7 +63,6 @@ export default function FormCreateAccount({ setShowModal, setRefresh }: FormCrea
             const response = await fetch(`http://localhost:3000/categories/${user?.id_user || 0}`);
             const dataFetch = await response.json();
             setCategoryList(dataFetch);
-            console.log("Catégories récupérées :", dataFetch);
         } catch (error) {
             console.error("Erreur lors de la récupération des catégories :", error);
         }
@@ -136,7 +135,7 @@ export default function FormCreateAccount({ setShowModal, setRefresh }: FormCrea
                         </div>
                     </div>
                     <div className='flex flex-col mb-4'>
-                        <Button buttonName="Add" />
+                        <Button buttonName="Add" buttonType="submit" />
                     </div>
                 </div>
             </form>

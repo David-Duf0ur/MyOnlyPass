@@ -1,18 +1,17 @@
 import React, { useContext, useState } from "react";
-import type { ICredential } from "../../types/interfaces";
+import type { ICredential, IFields } from "../../types/interfaces";
 import { UserContext } from "../../context/UserContext";
 import Button from "../globalcomponents/Button";
 
 
 interface AddFieldProps {
-  fields: { name: string; value: string }[];
-  setFields: React.Dispatch<React.SetStateAction<{ name: string; value: string }[]>>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   credentialSelected: ICredential | undefined;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  setFields: React.Dispatch<React.SetStateAction<IFields[]>>;
 }
 
-export default function AddField({ setShowModal, credentialSelected, setRefresh }: AddFieldProps) {
+export default function AddField({ setShowModal, credentialSelected, setFields }: AddFieldProps) {
   const { user } = useContext(UserContext);
   const [fieldName, setFieldName] = useState<string>('');
   const [fieldValue, setFieldValue] = useState<string>('');
@@ -29,7 +28,12 @@ export default function AddField({ setShowModal, credentialSelected, setRefresh 
         value: fieldValue
       }),
     });
-    setRefresh((prevRefresh) => !prevRefresh);
+
+    setFields((prevFields) => [
+      ...prevFields,
+      { name: fieldName, value: fieldValue }
+    ]);
+
     setShowModal(false);
   }
 

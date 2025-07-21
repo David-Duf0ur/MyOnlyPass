@@ -26,7 +26,7 @@ export default function ContentNav({ sortBy, setSortBy, setRefresh, refresh, set
 
   const fetchData = async (page: number, userId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/credentials/${page}/4/${userId}`)
+      const response = await fetch(`http://localhost:3000/credentials/${page}/5/${userId}`)
       const dataFetch = await response.json()
       setCredentialsPagined(dataFetch.results)
       setPagTotalPage(dataFetch.totalPages)
@@ -35,7 +35,9 @@ export default function ContentNav({ sortBy, setSortBy, setRefresh, refresh, set
     }
   }
 
-  useEffect(() => { fetchData(1, user?.id_user || 0) }, [refresh]);
+  useEffect(() => {
+    fetchData(1, user?.id_user || 0)
+  }, [refresh]);
 
   return (
     <>
@@ -59,7 +61,10 @@ export default function ContentNav({ sortBy, setSortBy, setRefresh, refresh, set
           {credentialsPagined.map((item) => (
             <button className="flex border-1 items-center cursor-pointer border-white bg-indigo-400 hover:scale-110 transition-transform duration-200 focus:bg-indigo-600 focus:outline-indigo-600 hover:bg-indigo-600 active:bg-indigo-700 m-2 p-2 rounded-lg text-white font-bold"
               key={item._id}
-              onClick={() => setCredentialSelected(item)}>
+              onClick={() => {
+                setCredentialSelected(item)
+              }
+              }>
               <div className='w-18 h-18 max-w-[48px] max-h-[48px] overflow-hidden flex items-center justify-center' dangerouslySetInnerHTML={{ __html: item.iconify }} />
               <div className="flex flex-col ml-2 w-full">
                 <div className='flex items-center justify-between'>

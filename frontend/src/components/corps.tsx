@@ -23,7 +23,6 @@ export default function Corps({ setLog }: ICredentialFields) {
             const response = await fetch(`http://localhost:3000/credentials/full/${userId}`)
             const dataFetch = await response.json()
             setDataListFull(dataFetch)
-            console.log("Data fetched:", dataFetch);
         } catch (error) {
             console.error("Erreur lors de la récupération :", error)
         }

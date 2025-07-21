@@ -12,6 +12,16 @@ export default function LoaderWrapper({ children }: { children: JSX.Element }): 
             children.props.onClick(e)
         }
 
+        // Check si j'ai besoin de transmettre le submit form
+        const type = children.props?.buttonType;
+        if (type === "submit") {
+            const form = (e.target as HTMLButtonElement)?.closest("form");
+            if (form) {
+                e.preventDefault();
+                form.requestSubmit();
+            }
+        }
+
         //Puis state à true pour afficher le loader
         setLoading(true)
 

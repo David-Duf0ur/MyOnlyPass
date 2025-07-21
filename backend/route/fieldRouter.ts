@@ -60,6 +60,8 @@ fieldRouter.post("/credential/fields/:idCredential/:fieldName/:idUser", async (r
         required: req.body.required,
     };
 
+    console.log('$$', updatedField)
+
     const db = client_mongo.db("fields");
     const dbFields = db.collection<ICredentialFields>("fields");
 

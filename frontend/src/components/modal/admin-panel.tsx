@@ -136,7 +136,7 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                   </div>
                   <div className="self-center flex items-center gap-2">
                     <LoaderWrapper>
-                      <Button buttonName="Save" />
+                      <Button buttonName="Save" buttonType="submit" />
                     </LoaderWrapper>
                   </div>
                 </form>
@@ -144,10 +144,10 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                 <h3 className='text-lg font-semibold'>Account management</h3>
                 <div className="self-center flex items-center gap-2">
                   <LoaderWrapper>
-                    <>
+                    <div className="inline-flex items-center gap-2">
                       <p className="mr-72">Delete your account : </p>
                       <Button buttonName="Delete" onClick={() => deleteAccount()} />
-                    </>
+                    </div>
                   </LoaderWrapper>
                 </div>
               </div>

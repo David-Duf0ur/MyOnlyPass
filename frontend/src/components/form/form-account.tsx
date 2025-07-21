@@ -1,28 +1,40 @@
 import { useContext, useEffect, useState } from "react";
-import type { ICredential } from "../../types/interfaces";
+import type { ICredential, IFields } from "../../types/interfaces";
 import { UserContext } from "../../context/UserContext";
 import LoaderWrapper from "../subcomponents/loader-wrapper";
 import Button from "../globalcomponents/Button";
+import Input from "../globalcomponents/Input";
 
 
 interface FormAccountProps {
     setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-    fields: { name: string; value: string }[];
     credentialSelected: ICredential | undefined;
+    setFields: React.Dispatch<React.SetStateAction<IFields[]>>;
+    fields: IFields[];
 }
 
-export default function FormAccount({ setRefresh, credentialSelected, fields }: FormAccountProps) {
+export default function FormAccount({ setRefresh, credentialSelected, setFields, fields }: FormAccountProps) {
     const { user } = useContext(UserContext);
 
-    const [email, setEmail] = useState<string>(credentialSelected?.mail || "empty");
-    const [password, setPassword] = useState<string>(credentialSelected?.passwordEncrypted || "empty");
-    const [url, setUrl] = useState<string>(credentialSelected?.url || "empty");
-    const [title, setTitle] = useState<string>(credentialSelected?.title || "empty");
+    const [email, setEmail] = useState<string>("empty");
+    const [password, setPassword] = useState<string>("empty");
+    const [url, setUrl] = useState<string>("empty");
+    const [title, setTitle] = useState<string>("empty");
     const [toggleEyes, setToggleEyes] = useState<boolean>(false);
-    const [iconifyLink, setIconifyLink] = useState<string>('')
-    const [customFieldValues, setCustomFieldValues] = useState<{ [key: string]: string }>(
-        () => fields.reduce((acc, field) => ({ ...acc, [field.name]: field.value }), {})
-    );
+    const [iconifyLink, _setIconifyLink] = useState<string>("empty");
+
+
+
+    const fetchFields = async (idCredential: string, idUser: number) => {
+        try {
+            const response = await fetch(`http://localhost:3000/fields/${idUser}/${idCredential}`);
+            const fieldsData = await response.json();
+            setFields(fieldsData[0].fieldConfig);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des champs :", error);
+        }
+    }
+
 
     const handleSubmit = async (e: React.FormEvent, idCredential: string, idUser: number) => {
         e.preventDefault();
@@ -41,19 +53,22 @@ export default function FormAccount({ setRefresh, credentialSelected, fields }: 
             })
         });
 
-        for (const fieldName in customFieldValues) {
-            await fetch(`http://localhost:3000/credential/fields/${credentialSelected?._id}/${fieldName}/${user?.id_user}`, {
+        fields.forEach(async (field) => {
+            console.log("Field name:", field.name);
+            console.log("Field value:", field.value);
+            await fetch(`http://localhost:3000/credential/fields/${credentialSelected?._id}/${field.name}/${user?.id_user}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    name: fieldName,
-                    value: customFieldValues[fieldName],
+                    name: field.name,
+                    value: field.value,
                     required: false
                 })
             });
-        }
+        });
+
         setRefresh((prevRefresh) => !prevRefresh);
     }
 
@@ -68,28 +83,22 @@ export default function FormAccount({ setRefresh, credentialSelected, fields }: 
         }
     }
 
-    const deleteField = async (idCredential: string, fieldName: string, idUser: number) => {
-        await fetch(`http://localhost:3000/field/${idCredential}/${fieldName}/${idUser}`, {
+    const deleteField = async (idCredential: string, field: IFields, idUser: number) => {
+        await fetch(`http://localhost:3000/field/${idCredential}/${field.name}/${idUser}`, {
             method: 'DELETE',
         });
-        setRefresh((prevRefresh) => !prevRefresh);
+        setFields((prevFields) => prevFields.filter((f) => !(f.name === field.name && f.value === field.value)));
     }
 
-    const handleCustomFieldChange = (name: string, value: string) => {
-        setCustomFieldValues(prev => ({ ...prev, [name]: value }));
-    };
-
     useEffect(() => {
-        setEmail(credentialSelected?.mail || "empty");
-        setPassword(credentialSelected?.passwordEncrypted || "empty");
-        setUrl(credentialSelected?.url || "empty");
-        setTitle(credentialSelected?.title || "empty");
-        setIconifyLink(credentialSelected?.iconify || iconifyLink)
+        fetchFields(credentialSelected?._id || "", credentialSelected?.userId || 0);
+
+        setEmail(credentialSelected?.mail || '');
+        setPassword(credentialSelected?.passwordEncrypted || '');
+        setUrl(credentialSelected?.url || '');
+        setTitle(credentialSelected?.title || '');
+
     }, [credentialSelected]);
-
-    useEffect(() => {
-        setCustomFieldValues(fields.reduce((acc, field) => ({ ...acc, [field.name]: field.value }), {}));
-    }, [fields]);
 
     return (
         <>
@@ -97,22 +106,16 @@ export default function FormAccount({ setRefresh, credentialSelected, fields }: 
                 className='flex flex-col items-center mx-auto p-6'
                 onSubmit={(e) => {
                     handleSubmit(e, credentialSelected?._id || '', user?.id_user || 0);
-                    setRefresh((prevRefresh) => !prevRefresh);
                 }}>
                 <div className='flex items-center gap-4 w-1/2 mr-6 ml-6 mb-2'>
                     <div id='iconify' className='w-12 h-12 max-w-[48px] max-h-[48px] overflow-hidden flex items-center justify-center' dangerouslySetInnerHTML={{ __html: iconifyLink }} />
-                    <input onChange={e => setTitle(e.target.value)} className='font-bold text-3xl w-full  bg-transparent  focus:outline-none transition' placeholder='Nom...' value={title}></input>
+                    <input onChange={(e) => setTitle(e.target.value)} className='font-bold text-3xl w-full  bg-transparent  focus:outline-none transition' placeholder='Nom...' value={title}></input>
                 </div>
                 <div className='flex flex-col items-center gap-2 mb-4'>
                     <div className='flex justify-between w-1/2 mr-6 ml-6  border-b-1 border-black-300 '>
-                        {/* <svg style={{ transform: "scaleX(-1)" }} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 17.175V6.825q0-.425.3-.713t.7-.287q.125 0 .263.037t.262.113l8.15 5.175q.225.15.338.375t.112.475t-.112.475t-.338.375l-8.15 5.175q-.125.075-.262.113T9 18.175q-.4 0-.7-.288t-.3-.712" /></svg> */}
                         <div className='w-[500px]'></div>
-                        {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M8 17.175V6.825q0-.425.3-.713t.7-.287q.125 0 .263.037t.262.113l8.15 5.175q.225.15.338.375t.112.475t-.112.475t-.338.375l-8.15 5.175q-.125.075-.262.113T9 18.175q-.4 0-.7-.288t-.3-.712" /></svg> */}
                     </div>
-                    <div className='flex flex-col mb-4'>
-                        <label htmlFor="email_field" className="">Email</label>
-                        <input onChange={e => setEmail(e.target.value)} id="email_field" value={email} className="bg-amber-200 p-2 rounded-lg w-64" type="email" name="input-email" title="Account email" placeholder="example@example.com"></input>
-                    </div>
+                    <Input labelName="Email" onChange={e => setEmail(e.target.value)} inputType="email" placeholder="example@example.com" value={email} />
                     <div className='flex flex-col mb-4'>
                         <label htmlFor="password_field" className="">Password</label>
                         <div className='flex items-center gap-2 cursor-pointer w-64'>
@@ -133,7 +136,6 @@ export default function FormAccount({ setRefresh, credentialSelected, fields }: 
                             </a>
                         </div>
                     </div>
-                    {/* <p>{JSON.stringify(fields)}</p> */}
                     {fields.length > 0 && (
                         <div className='flex flex-col mb-6 bg-gray-100 p-2 rounded-lg'>
                             <p className='underline mb-2 mx-auto'>Custom fields</p>
@@ -141,16 +143,23 @@ export default function FormAccount({ setRefresh, credentialSelected, fields }: 
                                 <div key={index} className='flex flex-col mb-4'>
                                     <div className='flex items-center gap-2 cursor-pointer w-64'>
                                         <label htmlFor={field.name} className="">{field.name}</label>
-                                        <svg onClick={() => deleteField(credentialSelected?._id || '', field.name, user?.id_user || 0)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
+                                        <svg onClick={() => deleteField(credentialSelected?._id || '', field, user?.id_user || 0)} className='hover:text-red-500' xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12a12 12 0 1 0-12 12a12 12 0 0 0 12-12m-7.29 3.28a1 1 0 0 1 0 1.41a1 1 0 0 1-1.42 0l-3.11-3.11a.26.26 0 0 0-.35 0l-3.11 3.11a1 1 0 0 1-1.41-1.41l3.11-3.11a.26.26 0 0 0 0-.35L7.31 8.71a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0l3.11 3.11a.24.24 0 0 0 .35 0l3.11-3.11a1 1 0 1 1 1.42 1.42l-3.11 3.11a.24.24 0 0 0 0 .35Z" /></svg>
                                     </div>
-                                    <input onChange={e => handleCustomFieldChange(field.name, e.target.value)} id={field.name} value={customFieldValues[field.name] || ''} className="bg-amber-200 p-2 rounded-lg w-64" type="text" name={field.name} title={field.name} placeholder={field.name}></input>
+                                    <input onChange={(e) => {
+                                        setFields((prevFields) =>
+                                            prevFields.map((f) =>
+                                                f.name === field.name ? { ...f, value: e.target.value } : f
+                                            )
+                                        );
+                                    }
+                                    } id={field.name} value={field.value} className="bg-amber-200 p-2 rounded-lg w-64" type="text" name={field.name} title={field.name} placeholder={field.name}></input>
                                 </div>
                             ))}
                         </div>
                     )}
                     <div className='flex flex-col mb-4'>
                         <LoaderWrapper>
-                            <Button buttonName="Save" />
+                            <Button buttonName="Save" buttonType="submit" />
                         </LoaderWrapper>
                     </div>
                 </div>

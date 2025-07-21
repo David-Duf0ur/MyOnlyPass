@@ -32,6 +32,7 @@ export default function RightSection({ setLog, dataListFull, setRefresh, refresh
     updatedAt: '',
   });
 
+
   return (
     <div style={{ backgroundImage: `url(${bg1})` }} className='basis-3/4 flex flex-col bg-cover bg-center bg-no-repeat flex-1 h-full'>
       <Header setLog={setLog} dataListFull={dataListFull} setRefresh={setRefresh} refresh={refresh} />

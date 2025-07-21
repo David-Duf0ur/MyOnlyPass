@@ -34,25 +34,11 @@ export default function Content({ setRefresh, refresh, credentialSelected, setCr
     });
     setCredentialSelected((prev) => ({ ...prev, favorite }));
     setFav(favorite);
-  }
-
-  const fetchFieldsConfig = async (idCredential: string, idUser: number) => {
-    try {
-      const response = await fetch(`http://localhost:3000/fields/${idUser}/${idCredential}`);
-      const fieldsData = await response.json();
-      setFields(fieldsData[0].fieldConfig);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des champs :", error);
-    }
+    setRefresh((prevRefresh) => !prevRefresh);
   }
 
   useEffect(() => {
-    console.log('coucou')
     setFav(credentialSelected.favorite);
-    setFields([]);
-    if (credentialSelected && credentialSelected._id && credentialSelected.userId) {
-      fetchFieldsConfig(credentialSelected._id, credentialSelected.userId);
-    }
   }, [credentialSelected, refresh]);
 
   return (
@@ -80,7 +66,7 @@ export default function Content({ setRefresh, refresh, credentialSelected, setCr
             )}
           </div>
           <div className='mt-6 mb-6'>
-            < FormAccount setRefresh={setRefresh} credentialSelected={credentialSelected} fields={fields} />
+            < FormAccount setRefresh={setRefresh} credentialSelected={credentialSelected} setFields={setFields} fields={fields} />
           </div>
           <div onClick={() => setShowModal(true)} className='flex items-center gap-2 mb-4 cursor-pointer hover:underline'>
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="currentColor" d="M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13s13-5.832 13-13S23.168 3 16 3m0 2c6.087 0 11 4.913 11 11s-4.913 11-11 11S5 22.087 5 16S9.913 5 16 5m-1 5v5h-5v2h5v5h2v-5h5v-2h-5v-5z" /></svg>
@@ -95,7 +81,7 @@ export default function Content({ setRefresh, refresh, credentialSelected, setCr
       }
       {
         showModal && (
-          <AddField credentialSelected={credentialSelected} fields={fields} setFields={setFields} setShowModal={setShowModal} setRefresh={setRefresh} />
+          <AddField credentialSelected={credentialSelected} setShowModal={setShowModal} setRefresh={setRefresh} setFields={setFields} />
         )
       }
     </>
