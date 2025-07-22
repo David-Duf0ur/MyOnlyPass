@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import type { ICredential, IFields } from "../../types/interfaces";
 import avatar1 from "../../assets/avatar/avatar1.jpg";
 import avatar2 from "../../assets/avatar/avatar2.jpg";
@@ -10,6 +10,7 @@ import avatar6 from "../../assets/avatar/avatar6.jpg";
 import { UserContext } from "../../context/UserContext";
 import LoaderWrapper from "../subcomponents/loader-wrapper";
 import Button from "../globalcomponents/Button";
+import ImportCSV from "./ImportCSV";
 
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
@@ -26,8 +27,12 @@ export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPa
   const [firstname, setFirstname] = useState<string>(user?.firstname || "");
   const [lastname, setLastname] = useState<string>(user?.lastname || "");
 
+  const [data, setData] = useState<ICredential[]>([]);
+
   const [csvData, setCsvData] = useState<string>("");
   const [selectedAvatar, setSelectedAvatar] = useState<number>(user.avatar || 0);
+
+  const [showModalImportCSV, setShowModalImportCSV] = useState(false);
 
   function convertToCSV(data: ICredential[] | IFields[]): string {
     if (data.length === 0) return "No data available";
@@ -92,6 +97,22 @@ export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPa
     }
   }
 
+  const fetchAllCredentials = async (userId: number) => {
+    try {
+      const response = await fetch(`http://localhost:3000/credentials/full/${userId}`);
+      if (!response.ok) throw new Error("Failed to fetch credentials");
+      const data = await response.json();
+      setData(data);
+      console.log("Fetched credentials:", data);
+    } catch (error) {
+      console.error("Error fetching credentials:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllCredentials(user?.id_user || 0);
+  }, []);
+
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center bg-gray-600/60">
@@ -139,9 +160,9 @@ export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPa
                 <div className="border-b-2 border-black"></div>
                 <h3 className='text-lg font-semibold'>Account management</h3>
                 <div className="self-center flex items-center gap-2">
+                  <p className="mr-72">Delete your account : </p>
                   <LoaderWrapper>
                     <div className="inline-flex items-center gap-2">
-                      <p className="mr-72">Delete your account : </p>
                       <Button buttonName="Delete" onClick={() => deleteAccount()} />
                     </div>
                   </LoaderWrapper>
@@ -150,10 +171,10 @@ export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPa
               <div className="border-b-2 border-black"></div>
 
               <div className="flex items-center justify-center gap-2 mt-4">
-                <Button buttonName="Export" onClick={() => {
-                  // setCsvData(convertToCSV(dataListFull));
+                <Button buttonName="Archiver" onClick={() => {
+                  setCsvData(convertToCSV(data));
                 }} />
-                <Button buttonName="Import" />
+                <Button buttonName="Import" onClick={() => setShowModalImportCSV(true)} />
               </div>
               {csvData && (
                 <>
@@ -174,6 +195,9 @@ export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPa
           </div>
           <p className='text-center bg-gray-200 p-1 rounded-b-lg'>MOP - 2025</p>
         </div>
+        {showModalImportCSV && (
+          <ImportCSV setShowModalImportCSV={setShowModalImportCSV} />
+        )}
       </div >
     </>
   )

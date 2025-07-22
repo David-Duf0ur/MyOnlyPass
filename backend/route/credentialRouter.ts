@@ -12,6 +12,14 @@ credentialRouter.get("/credentials/fullax", async (req, res) => {
     res.json(result);
 })
 
+// Récupération de tout les crédentials d'un utilisateur
+credentialRouter.get("/credentials/full/:userId", async (req, res) => {
+    console.log("/credentials/full/:userId")
+    const userId = parseInt(req.params.userId, 10);
+    const db = client_mongo.db("credentials");
+    const result = await db.collection("credentials").find({ userId }).toArray();
+    res.json(result);
+})
 
 // Récupération d'un crédential avec le nom le plus proche pour un utilisateur
 credentialRouter.get("/credentials/closest/:userId/:name", async (req, res) => {

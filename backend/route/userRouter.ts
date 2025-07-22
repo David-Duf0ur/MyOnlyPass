@@ -100,8 +100,8 @@ userRouter.delete("/user/:idUser", async (req, res) => {
         values: [idUser],
     };
     try {
-        const result = await client_pg.query(preparedQuery);
-        res.json(result.rows[0]);
+        // const result = await client_pg.query(preparedQuery);
+        // res.json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }

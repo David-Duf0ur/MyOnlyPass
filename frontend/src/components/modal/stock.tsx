@@ -39,8 +39,11 @@ export default function Stock({ setShowModalStock }: StockProps) {
 
     useEffect(() => {
         btcFetch()
-        statusFetch()
     }, [reload]);
+
+    useEffect(() => {
+        statusFetch()
+    }, []);
 
     return (
         <>
