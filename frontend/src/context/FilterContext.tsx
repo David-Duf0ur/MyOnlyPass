@@ -7,15 +7,18 @@ export const FilterContext = createContext({
     setOrderdBy: (_orderedBy: string) => { },
     search: '',
     setSearch: (_search: string) => { },
+    filterCategory: 'empty',
+    setFilterCategory: (_filterCategory: string) => { },
 });
 
 export function FilterProvider({ children }: { children: JSX.Element }): JSX.Element {
     const [filter, setFilter] = useState('all');
     const [orderdBy, setOrderdBy] = useState('title');
     const [search, setSearch] = useState('');
+    const [filterCategory, setFilterCategory] = useState('empty');
 
     return (
-        <FilterContext.Provider value={{ filter, setFilter, orderdBy, setOrderdBy, search, setSearch }}>
+        <FilterContext.Provider value={{ filter, setFilter, orderdBy, setOrderdBy, search, setSearch, filterCategory, setFilterCategory }}>
             {children}
         </FilterContext.Provider>
     );

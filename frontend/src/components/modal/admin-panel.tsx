@@ -15,13 +15,12 @@ const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
 interface AdminPanelProps {
   setShowModal: (show: boolean) => void;
-  dataListFull: ICredential[];
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
   setLog: (log: boolean) => void;
 }
 
-export default function AdminPanel({ setShowModal, dataListFull, setRefresh, setLog }: AdminPanelProps) {
+export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPanelProps) {
   const { user, updateUser } = useContext(UserContext);
 
   const [firstname, setFirstname] = useState<string>(user?.firstname || "");
@@ -119,9 +118,6 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                     </div>
                   ))}
                 </div>
-                {/* <div className="flex flex-col items-center justify-between mt-4">
-                  <button className='bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded'>Save</button>
-                </div> */}
                 <div className="border-b-2 border-black"></div>
                 <h3 className='text-lg font-semibold'>User Information</h3>
                 <p className='text-m'>Email: {user?.email || "Not logged in"}</p>
@@ -152,15 +148,10 @@ export default function AdminPanel({ setShowModal, dataListFull, setRefresh, set
                 </div>
               </div>
               <div className="border-b-2 border-black"></div>
-              <h3 className='text-lg font-semibold'>Data List</h3>
-              <ul className='pl-5'>
-                {dataListFull.map((item, index) => (
-                  <li key={index} className='text-m'>{item.title} - id: {item._id}</li>
-                ))}
-              </ul>
+
               <div className="flex items-center justify-center gap-2 mt-4">
                 <Button buttonName="Export" onClick={() => {
-                  setCsvData(convertToCSV(dataListFull));
+                  // setCsvData(convertToCSV(dataListFull));
                 }} />
                 <Button buttonName="Import" />
               </div>

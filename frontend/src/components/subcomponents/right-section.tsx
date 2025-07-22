@@ -8,15 +8,12 @@ import FormSearch from "../form/form-search";
 import { useState } from "react";
 
 interface RightSectionProps {
-  dataListFull: ICredential[];
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
-  sortBy: 'title' | 'category' | 'mail';
-  setSortBy: React.Dispatch<React.SetStateAction<'title' | 'category' | 'mail'>>;
   setLog: (value: boolean) => void;
 }
 
-export default function RightSection({ setLog, dataListFull, setRefresh, refresh, sortBy, setSortBy }: RightSectionProps) {
+export default function RightSection({ setLog, setRefresh, refresh }: RightSectionProps) {
   const [credentialSelected, setCredentialSelected] = useState<ICredential>({
     _id: '',
     vaultId: 0,
@@ -35,12 +32,12 @@ export default function RightSection({ setLog, dataListFull, setRefresh, refresh
 
   return (
     <div style={{ backgroundImage: `url(${bg1})` }} className='basis-3/4 flex flex-col bg-cover bg-center bg-no-repeat flex-1 h-full'>
-      <Header setLog={setLog} dataListFull={dataListFull} setRefresh={setRefresh} refresh={refresh} />
+      <Header setLog={setLog} setRefresh={setRefresh} refresh={refresh} />
       <div className='flex flex-col'>
         <FormSearch setCredentialSelected={setCredentialSelected} credentialSelected={credentialSelected} />
         <div style={{ backgroundImage: `url(${bg2})` }}
           className='bg-cover bg-center bg-no-repeat flex m-4 rounded-lg border-1 border-white'>
-          <ContentNav sortBy={sortBy} setSortBy={setSortBy} setRefresh={setRefresh} refresh={refresh} setCredentialSelected={setCredentialSelected} />
+          <ContentNav setRefresh={setRefresh} refresh={refresh} setCredentialSelected={setCredentialSelected} />
           <Content credentialSelected={credentialSelected} setCredentialSelected={setCredentialSelected} setRefresh={setRefresh} refresh={refresh} />
         </div>
       </div>

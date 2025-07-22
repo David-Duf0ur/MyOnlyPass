@@ -23,7 +23,7 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
     const [toggleEyes, setToggleEyes] = useState<boolean>(false);
     const [iconifyLink, setIconifyLink] = useState<string>("empty");
 
-
+    console.log('render form account')
 
     const fetchFields = async (idCredential: string, idUser: number) => {
         try {

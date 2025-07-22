@@ -1,18 +1,34 @@
 import logo from '../../assets/logo.svg';
 import bg2 from '../../assets/bg-2.jpg';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import PassGenerator from '../modal/pass-generator';
 import { FilterContext } from '../../context/FilterContext';
+import { UserContext } from '../../context/UserContext';
 
 
 interface ILeftSectionProps {
-  itemFilter: string;
-  setItemFilter: (filter: string) => void;
+
 }
 
-export default function LeftSection({ itemFilter, setItemFilter }: ILeftSectionProps) {
-  const { setFilter } = useContext(FilterContext);
+export default function LeftSection({ }: ILeftSectionProps) {
+  const { user } = useContext(UserContext);
+  const { filter, setFilter, setFilterCategory, filterCategory, orderdBy } = useContext(FilterContext);
   const [showModal, setShowModal] = useState(false);
+  const [categoryList, setCategoryList] = useState<string[]>([]);
+
+  const categoryFetch = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/categories/${user?.id_user || 0}`);
+      const dataFetch = await response.json();
+      setCategoryList(dataFetch);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des catégories :", error);
+    }
+  }
+
+  useEffect(() => {
+    categoryFetch();
+  }, []);
 
   return (
     <>
@@ -28,30 +44,40 @@ export default function LeftSection({ itemFilter, setItemFilter }: ILeftSectionP
           <li className='text-3xl'>Navigation</li>
           <ol className='mb-4'>
             <li onClick={() => {
-              setItemFilter("all");
               setFilter('all');
             }}
               className={
                 'flex content-center items-center gap-2 ml-4 mt-4 cursor-pointer' +
-                (itemFilter === "all" ? ' underline' : '')
+                (filter === "all" ? ' underline' : '')
               }>
               <svg className='hover:w-[30px] hover:h-[30px]' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21v-5h2v3h3v2zm13 0v-2h3v-3h2v5zm-4-2q-2.9 0-4.95-2.05T5 12t2.05-4.95T12 5t4.95 2.05T19 12t-2.05 4.95T12 19M3 8V3h5v2H5v3zm16 0V5h-3V3h5v5z" /></svg>
               <p className='text-2xl'>All items</p>
             </li>
             <li onClick={() => {
-              setItemFilter("favorites");
               setFilter('favorites');
             }}
               className={
                 'flex content-center items-center gap-2 ml-4 mt-4 cursor-pointer' +
-                (itemFilter === "favorites" ? ' underline' : '')
+                (filter === "favorites" ? ' underline' : '')
               }>
               <svg className='hover:w-[30px] hover:h-[30px]' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M22 9.67a1 1 0 0 0-.86-.67l-5.69-.83L12.9 3a1 1 0 0 0-1.8 0L8.55 8.16L2.86 9a1 1 0 0 0-.81.68a1 1 0 0 0 .25 1l4.13 4l-1 5.68a1 1 0 0 0 1.47 1.08l5.1-2.67l5.1 2.67a.93.93 0 0 0 .46.12a1 1 0 0 0 .59-.19a1 1 0 0 0 .4-1l-1-5.68l4.13-4A1 1 0 0 0 22 9.67m-6.15 4a1 1 0 0 0-.29.88l.72 4.2l-3.76-2a1.06 1.06 0 0 0-.94 0l-3.76 2l.72-4.2a1 1 0 0 0-.29-.88l-3-3l4.21-.61a1 1 0 0 0 .76-.55L12 5.7l1.88 3.82a1 1 0 0 0 .76.55l4.21.61Z" /></svg>
               <p className='text-2xl'>Favorites</p>
             </li>
-            <li onClick={() => setItemFilter("category")} className='flex content-center items-center gap-2 ml-4 mt-4 cursor-pointer hover:underline'>
-              <svg className='hover:w-[30px] hover:h-[30px]' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M6 10.5a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0-3m4.5 1.5a1.5 1.5 0 1 1 3 0a1.5 1.5 0 0 1-3 0m6 0a1.5 1.5 0 1 1 3 0a1.5 1.5 0 0 1-3 0" /></svg>
-              <p className='text-2xl'>Category</p>
+            <li className='flex content-center items-center gap-2 ml-4 mt-4 cursor-pointer hover:underline'>
+              <div className='w-full'>
+                <p className='text-2xl'>Category</p>
+                <select onChange={(e) => {
+                  setFilter("category")
+                  setFilterCategory(e.target.value)
+                }} className="w-full mt-2 mb-2 text-xl italic">
+                  <option value="">
+                    Choose category
+                  </option>
+                  {categoryList.map((category, index) => (
+                    <option className='text-2xl' key={index} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
             </li>
           </ol>
           <li className='text-3xl mt-12'>Tools</li>

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import AdminPanel from '../modal/admin-panel';
-import type { ICredential } from '../../types/interfaces';
+
 import avatar1 from "../../assets/avatar/avatar1.jpg";
 import avatar2 from "../../assets/avatar/avatar2.jpg";
 import avatar3 from "../../assets/avatar/avatar3.jpg";
@@ -13,13 +13,12 @@ import { UserContext } from '../../context/UserContext';
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
 interface HeaderProps {
-  dataListFull: ICredential[];
   setLog: (log: boolean) => void;
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   refresh: boolean;
 }
 
-export default function Header({ setLog, dataListFull, setRefresh, refresh }: HeaderProps) {
+export default function Header({ setLog, setRefresh, refresh }: HeaderProps) {
 
   const { user } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
@@ -38,7 +37,7 @@ export default function Header({ setLog, dataListFull, setRefresh, refresh }: He
         </div>
       </div>
       {showModal && (
-        <AdminPanel setLog={setLog} setShowModal={setShowModal} dataListFull={dataListFull} setRefresh={setRefresh} refresh={refresh} />
+        <AdminPanel setLog={setLog} setShowModal={setShowModal} setRefresh={setRefresh} refresh={refresh} />
       )}
     </>
   )
