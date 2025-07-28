@@ -103,7 +103,6 @@ export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPa
       if (!response.ok) throw new Error("Failed to fetch credentials");
       const data = await response.json();
       setData(data);
-      console.log("Fetched credentials:", data);
     } catch (error) {
       console.error("Error fetching credentials:", error);
     }
@@ -196,7 +195,7 @@ export default function AdminPanel({ setShowModal, setRefresh, setLog }: AdminPa
           <p className='text-center bg-gray-200 p-1 rounded-b-lg'>MOP - 2025</p>
         </div>
         {showModalImportCSV && (
-          <ImportCSV setShowModalImportCSV={setShowModalImportCSV} />
+          <ImportCSV setShowModalImportCSV={setShowModalImportCSV} setRefresh={setRefresh} />
         )}
       </div >
     </>

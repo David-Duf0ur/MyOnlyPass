@@ -18,6 +18,12 @@ export default function AddField({ setShowModal, credentialSelected, setFields }
 
   const handleClick = async (e: React.MouseEvent, idCredential: string, idUser: number) => {
     e.preventDefault();
+
+    if (!fieldName || !fieldValue) {
+      console.log("Field name and value are required");
+      return;
+    }
+
     await fetch(`http://localhost:3000/credential/fields/${idCredential}/${idUser}`, {
       method: 'POST',
       headers: {

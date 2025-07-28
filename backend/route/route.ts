@@ -29,6 +29,17 @@ router.post("/credential/:userId", async (req, res) => {
   console.log("/credential/:userId");
   const userId = parseInt(req.params.userId, 10);
   const dbCredential = client_mongo.db("credentials");
+
+  const existingCredential = await dbCredential
+    .collection("credentials")
+    .findOne({ userId, title: req.body.title });
+
+  if (existingCredential) {
+    res.status(409).json({ error: "Title already exists." });
+    return
+  }
+
+
   const result = await dbCredential.collection("credentials").insertOne({
     userId: userId,
     title: req.body.title,
@@ -48,6 +59,7 @@ router.post("/credential/:userId", async (req, res) => {
     created_at: new Date(),
     updated_at: new Date()
   });
+
   res.json(result);
 })
 
