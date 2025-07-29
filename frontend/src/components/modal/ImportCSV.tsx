@@ -8,33 +8,21 @@ interface ImportCSVProps {
 }
 
 interface ICredentialImport {
-    _id: string;
-    vaultId: string;
     title: string;
     category: string;
-    userId: string;
-    passwordEncrypted: string;
+    password: string;
     mail: string;
     url: string;
-    iconify: string;
     favorite: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 const HEADER_CSV_REF = [
-    "_id",
-    "vaultId",
     "title",
     "category",
-    "userId",
-    "passwordEncrypted",
+    "password",
     "mail",
     "url",
-    "favorite",
-    "iconify",
-    "createdAt",
-    "updatedAt",
+    "favorite"
 ];
 
 
@@ -56,7 +44,6 @@ export default function Stock({ setShowModalImportCSV, setRefresh }: ImportCSVPr
             return
         };
 
-
         setError("");
         const rowsWithoutHeader = csv.split("\n").slice(1).map(row => row.split(","));
         const rows = csv.split("\n").map(row => row.split(","));
@@ -77,18 +64,17 @@ export default function Stock({ setShowModalImportCSV, setRefresh }: ImportCSVPr
     };
 
     const handleSave = async (credentials: ICredentialImport[]) => {
-        // Vérification des données
-        // _id, vaultId, userId, iconify, createdAt, updatedAt doivent être vidents
-        const test = credentials.every(cred => cred._id === '' && cred.vaultId === '' && cred.userId === '' && cred.iconify === '' && cred.createdAt === '' && cred.updatedAt === '');
+        // Vérification des données       
 
         // controle la présence des champs obligatoires
-        const test2 = credentials.every(cred => cred.title !== '' && cred.mail !== '' && cred.passwordEncrypted !== '' && cred.url !== '' && cred.category !== '' && (cred.favorite === 'true' || cred.favorite === 'false'));
+        const test = credentials.every(cred => cred.title !== '' && cred.mail !== '' && cred.password !== '' && cred.url !== '' && cred.category !== '' && (cred.favorite === 'true' || cred.favorite === 'false'));
 
-        if (!test || !test2) {
+        if (!test) {
             console.log("Erreur dans les données importées");
             return
         }
 
+        // Ecriture des données dans la base de données
         credentials.forEach(async (cred) => {
             const response = await fetch(`http://localhost:3000/credential/${user.id_user}`, {
                 method: 'POST',
@@ -100,7 +86,7 @@ export default function Stock({ setShowModalImportCSV, setRefresh }: ImportCSVPr
                     title: cred.title,
                     category: cred.category,
                     userId: user.id_user,
-                    passwordEncrypted: cred.passwordEncrypted,
+                    passwordEncrypted: cred.password,
                     mail: cred.mail,
                     url: cred.url,
                     iconify: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2m0 14a1 1 0 1 0 0 2a1 1 0 0 0 0-2m0-9.5a3.625 3.625 0 0 0-3.625 3.625a1 1 0 1 0 2 0a1.625 1.625 0 1 1 2.23 1.51c-.676.27-1.605.962-1.605 2.115V14a1 1 0 1 0 2 0c0-.244.05-.366.261-.47l.087-.04A3.626 3.626 0 0 0 12 6.5"/></g></svg>',
@@ -133,15 +119,15 @@ export default function Stock({ setShowModalImportCSV, setRefresh }: ImportCSVPr
                     </div>
                     <div className="p-2 flex flex-col gap-2">
                         <p>Data to import : </p>
-                        <p>Format : _id | vaultId | title | category | userId | passwordEncrypted | mail | url | favorite | iconify | created_at | updated_at </p>
+                        <p>Format : title | category | password | mail | url | favorite </p>
                         <div className="flex gap-2 items-center justify-center">
                             <div className="flex flex-col">
                                 <p>CSV</p>
-                                <input type="radio" name="" id="" />
+                                <input type="radio" name="importTyp" />
                             </div>
                             <div className="flex flex-col">
                                 <p>Backup</p>
-                                <input type="radio" name="" id="" />
+                                <input type="radio" name="importTyp" />
                             </div>
                         </div>
                         <p>Header format : </p>

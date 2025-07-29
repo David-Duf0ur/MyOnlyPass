@@ -22,6 +22,7 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
     const [title, setTitle] = useState<string>("empty");
     const [toggleEyes, setToggleEyes] = useState<boolean>(false);
     const [iconifyLink, setIconifyLink] = useState<string>("empty");
+    const [showFields, setShowFields] = useState<boolean>(false);
 
     const fetchFields = async (idCredential: string, idUser: number) => {
         try {
@@ -32,7 +33,6 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
             console.error("Erreur lors de la récupération des champs :", error);
         }
     }
-
 
     const handleSubmit = async (e: React.FormEvent, idCredential: string, idUser: number) => {
         e.preventDefault();
@@ -107,9 +107,15 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
                     handleSubmit(e, credentialSelected?._id || '', user?.id_user || 0);
                 }}>
                 <div className='flex items-center gap-4 w-1/2 mr-6 ml-6 mb-2'>
-                    <div id='iconify' className='w-12 h-12 max-w-[48px] max-h-[48px] overflow-hidden flex items-center justify-center' dangerouslySetInnerHTML={{ __html: iconifyLink }} />
+                    <div onClick={() => setShowFields(prev => !prev)} id='iconify' className='w-12 h-12 max-w-[48px] max-h-[48px] overflow-hidden flex items-center justify-center' dangerouslySetInnerHTML={{ __html: iconifyLink }} />
                     <input onChange={(e) => setTitle(e.target.value)} className='font-bold text-3xl w-full  bg-transparent  focus:outline-none transition' placeholder='Nom...' value={title}></input>
                 </div>
+                {showFields && (
+                    <div className="mb-2">
+                        <input type="text" className="bg-amber-200 p-2 rounded-lg mr-2" placeholder="<svg>...</svg>" />
+                        <Button buttonName="Save" />
+                    </div>
+                )}
                 <div className='flex flex-col items-center gap-2 mb-4'>
                     <div className='flex justify-between w-1/2 mr-6 ml-6  border-b-1 border-black-300 '>
                         <div className='w-[500px]'></div>

@@ -72,7 +72,7 @@ export default function LeftSection({ }: ILeftSectionProps) {
                   setFilter("category")
                   setFilterCategory(e.target.value)
                 }} className="w-full mt-2 mb-2 text-xl italic">
-                  <option value="">
+                  <option value="all">
                     Choose category
                   </option>
                   {categoryList.map((category, index) => (

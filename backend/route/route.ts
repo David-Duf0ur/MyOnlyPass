@@ -35,7 +35,7 @@ router.post("/credential/:userId", async (req, res) => {
     .findOne({ userId, title: req.body.title });
 
   if (existingCredential) {
-    res.status(409).json({ error: "Title already exists." });
+    res.status(409).json({ error: `Title "${req.body.title}" already exists.` });
     return
   }
 
