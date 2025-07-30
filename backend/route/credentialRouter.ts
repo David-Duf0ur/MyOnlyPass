@@ -121,6 +121,21 @@ credentialRouter.post("/credential/:idCredential/:userId", async (req, res) => {
     res.json(result);
 })
 
+// Modification de l'icon d'un crédential pour un utilisateur
+credentialRouter.post("/credential/icon/:idCredential/:userId", async (req, res) => {
+    console.log("/credential/icon/:idCredential/:userId")
+    const db = client_mongo.db("credentials");
+    const result = await db.collection("credentials").updateOne(
+        { _id: new ObjectId(req.params.idCredential), userId: parseInt(req.params.userId, 10) },
+        {
+            $set: {
+                iconify: req.body.iconify,
+            }
+        }
+    );
+    res.json(result);
+})
+
 // Récupération de toutes les catégories d'un utilisateur
 credentialRouter.get("/categories/:userId", async (req, res) => {
     console.log("/categories/:userId")

@@ -81,6 +81,23 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
         }
     }
 
+    const changeIcon = async (idCredential: string, idUser: number) => {
+
+        await fetch(`http://localhost:3000/credential/icon/${idCredential}/${idUser}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                iconify: iconifyLink
+            })
+        });
+
+        setRefresh((prevRefresh) => !prevRefresh);
+        setShowFields(false);
+
+    }
+
     const deleteField = async (idCredential: string, field: IFields, idUser: number) => {
         await fetch(`http://localhost:3000/field/${idCredential}/${field.name}/${idUser}`, {
             method: 'DELETE',
@@ -112,8 +129,8 @@ export default function FormAccount({ setRefresh, credentialSelected, setFields,
                 </div>
                 {showFields && (
                     <div className="mb-2">
-                        <input type="text" className="bg-amber-200 p-2 rounded-lg mr-2" placeholder="<svg>...</svg>" />
-                        <Button buttonName="Save" />
+                        <input onChange={(e) => setIconifyLink(e.target.value)} type="text" className="bg-amber-200 p-2 rounded-lg mr-2" placeholder="<svg>...</svg>" />
+                        <Button buttonName="Save" onClick={() => changeIcon(credentialSelected?._id || '', user?.id_user || 0)} />
                     </div>
                 )}
                 <div className='flex flex-col items-center gap-2 mb-4'>
